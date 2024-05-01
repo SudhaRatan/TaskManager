@@ -11,7 +11,7 @@ const Index = ({ navigation }) => {
       <View style={{ gap: 10, alignItems: "flex-start",width:"100%",padding:20 }}>
         <Text>Login</Text>
         <TextInput
-          label="Email address"
+          label="Email"
           value={text}
           mode="flat"
           style={{width:"100%"}}
