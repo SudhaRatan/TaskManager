@@ -1,39 +1,58 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import Index from "./Screens/Index";
-import Test from "./Screens/test";
 import NavigationDrawer from "./Components/NavigationDrawer";
-import { Text, View } from "react-native";
+import {
+  DefaultTheme,
+  Provider as PaperProvider,
+  useTheme,
+} from "react-native-paper";
+import { useBreakPoint } from "./utils/breakpoint";
+import Home from "./Screens/Home";
+import LoginHeader from "./Components/LoginHeader";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 export default function Navigation() {
+  const theme = useTheme();
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="index" component={Index} />
-      <Stack.Screen
-        name="test"
-        component={MainDrawer}
-        options={{
-          headerShown: false,
-        }}
-      />
-    </Stack.Navigator>
+    <PaperProvider theme={DefaultTheme}>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="login"
+          options={{
+            headerShown: false,
+          }}
+          component={Index}
+        />
+        <Stack.Screen
+          name="app"
+          component={MainDrawer}
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack.Navigator>
+    </PaperProvider>
   );
 }
 
 function MainDrawer() {
   return (
-    <Drawer.Navigator screenOptions={{
-        drawerType:"back",
-    }}
-    drawerContent={(props) => <NavigationDrawer {...props} />}
+    <Drawer.Navigator
+      screenOptions={{
+        drawerType: useBreakPoint("front", "front", "permanent"),
+      }}
+      drawerContent={(props) => <NavigationDrawer {...props} />}
     >
-      <Drawer.Screen name="index" options={{
-        drawerLabel:"Main"
-      }} component={Test} />
-      <Drawer.Screen name="index1" component={() => <View><Text>Ratan</Text></View>} />
+      <Drawer.Screen
+        name="Home"
+        options={{
+          drawerLabel: "Main",
+        }}
+        component={Home}
+      />
     </Drawer.Navigator>
   );
 }
