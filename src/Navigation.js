@@ -10,6 +10,7 @@ import {
 import { useBreakPoint } from "./utils/breakpoint";
 import Home from "./Screens/Home";
 import LoginHeader from "./Components/LoginHeader";
+import CategoryScreen from "./Screens/CategoryScreen";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -53,6 +54,7 @@ function MainDrawer() {
         }}
         component={Home}
       />
+      <Drawer.Screen name="Category" component={CategoryScreen} />
     </Drawer.Navigator>
   );
 }

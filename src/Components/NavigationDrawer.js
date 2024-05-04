@@ -1,15 +1,14 @@
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-
 import { Drawer, Text, Button, List } from "react-native-paper";
-import { withObservables } from "@nozbe/watermelondb/react";
 import { useDatabaseStore } from "../Stores/databaseStore";
 import EnhancedCategories from "../Observables/EnhancedCategories";
 
 const NavigationDrawer = ({ state, navigation, descriptors }) => {
   const [catAcc, setCatAcc] = useState(true);
   const [categories, setCategories] = useState([]);
+
   const isSelected = (index) => index === state.index;
 
   const database = useDatabaseStore((state) => state.database);
@@ -35,16 +34,17 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
           Task Manager
         </Text>
         {state.routes.map((item, index) => {
-          return (
-            <Drawer.Item
-              key={item.key}
-              label={item.name}
-              active={isSelected(index)}
-              onPress={() => {
-                navigation.navigate(item.name);
-              }}
-            />
-          );
+          if (index === 0)
+            return (
+              <Drawer.Item
+                key={item.key}
+                label={item.name}
+                active={isSelected(index)}
+                onPress={() => {
+                  navigation.navigate(item.name);
+                }}
+              />
+            );
         })}
         <List.Accordion
           expanded={catAcc}
@@ -52,7 +52,7 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
           title="Categories"
           left={(props) => <List.Icon {...props} icon="folder" />}
         >
-          <EnhancedCategories categories={categories} />
+          <EnhancedCategories navigation={navigation} categories={categories} state={state} />
         </List.Accordion>
       </DrawerContentScrollView>
       <View>
@@ -65,5 +65,3 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
 };
 
 export default NavigationDrawer;
-
-

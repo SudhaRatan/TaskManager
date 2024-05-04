@@ -36,13 +36,7 @@ const AddCategory = ({ visible, hideDialog }) => {
         </Dialog.Content>
         <Dialog.Actions>
           <Button onPress={hideDialog}>Cancel</Button>
-          <Button
-            style={{ paddingHorizontal: 10 }}
-            mode="contained"
-            onPress={Add}
-          >
-            Done
-          </Button>
+          <Button onPress={Add}>Add</Button>
         </Dialog.Actions>
       </Dialog>
     </Portal>
