@@ -12,6 +12,14 @@ export const getTasksForCategory = async (categoryId) => {
   return tasks;
 };
 
+export const checkTask = async (task) => {
+  await database.write(async () => {
+    await task.update(() => {
+      task.isChecked = !task.isChecked;
+    });
+  });
+};
+
 export const addTask = ({ title, categoryId }) => {
   return new Promise(async (resolve, reject) => {
     await database.write(async () => {

@@ -13,44 +13,26 @@ import { View } from "react-native";
 import { getCategories } from "../DL/CategoriesDL";
 import { EnhancedCategoriesDropdown } from "../Observables/EnhancedCategories";
 import { useCategoryStore } from "../Stores/categoryStore";
-import { addTask, getTasksForCategory } from "../DL/TasksDL";
-import { useTaskStore } from "../Stores/taskStore";
+import { addTask } from "../DL/TasksDL";
 
 const AddTask = ({ visible, hideDialog }) => {
   const [title, setTitle] = useState("");
   const [visible1, setVisible1] = useState(false);
-  const [categories, setCategories] = useState([]);
   const [menuWidth, setMenuWidth] = useState(0);
   const category = useCategoryStore((state) => state.category);
-
-  const setCategoryTasks = useTaskStore((state) => state.setCategoryTasks);
-  const getTasks = async (catId) => {
-    const tasks = await getTasksForCategory(catId);
-    setCategoryTasks(tasks);
-  };
 
   const Add = async () => {
     if (title !== "" && category !== null) {
       addTask({ title, categoryId: category.id }).then((newTask) => {
         console.log(newTask);
-        getTasks(category.id);
         hideDialog();
         setTitle("");
       });
     }
   };
 
-  const getCategoriesDB = async () => {
-    const categors = await getCategories();
-    setCategories(categors);
-  };
-
   const openMenu = () => setVisible1(true);
   const closeMenu = () => setVisible1(false);
-
-  useEffect(() => {
-    getCategoriesDB();
-  }, []);
 
   return (
     <Portal>
@@ -91,7 +73,6 @@ const AddTask = ({ visible, hideDialog }) => {
           >
             <EnhancedCategoriesDropdown
               closeMenu={closeMenu}
-              categories={categories}
             />
           </Menu>
 

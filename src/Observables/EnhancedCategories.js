@@ -8,10 +8,10 @@ import { useTaskStore } from "../Stores/taskStore";
 import { getTasksForCategory } from "../DL/TasksDL";
 
 const database = useDatabaseStore.getState().database;
-const setCategory = useCategoryStore.getState().setCategory;
 
 function Categories({ categories, navigation, state }) {
   const [selIndex, setSelIndex] = useState(0);
+  const setCategory = useCategoryStore((state) => state.setCategory);
   const isActive = (index) => {
     if (state.index === 1 && selIndex === index) {
       return true;
@@ -27,7 +27,7 @@ function Categories({ categories, navigation, state }) {
   };
 
   useState(() => {
-    getTasks(categories[0].id);
+    if (categories.length > 0) getTasks(categories[0].id);
   }, []);
   return (
     <>
@@ -51,6 +51,7 @@ function Categories({ categories, navigation, state }) {
 }
 
 function CategoriesDropdown({ categories, closeMenu }) {
+  const setCategory = useCategoryStore((state) => state.setCategory);
   return (
     <ScrollView style={{ maxHeight: 300 }}>
       {categories.map((category, index) => {

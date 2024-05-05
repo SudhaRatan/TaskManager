@@ -22,6 +22,7 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
 
   const getCategoriesDB = async () => {
     const categors = await getCategories();
+    setStoreCategory(categors[0]);
     setCategories(categors);
   };
 
@@ -60,7 +61,6 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
         >
           <EnhancedCategories
             navigation={navigation}
-            categories={categories}
             state={state}
           />
         </List.Accordion>
