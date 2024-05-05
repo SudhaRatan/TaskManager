@@ -1,4 +1,3 @@
-import { withTheme } from "react-native-paper";
 import { View } from "react-native";
 
 const ScreenBackground = ({ theme, style, children }) => {
@@ -6,4 +5,4 @@ const ScreenBackground = ({ theme, style, children }) => {
   return <View style={[style, backgroundStyle]}>{children}</View>;
 };
 
-export default withTheme(ScreenBackground);
+export default ScreenBackground;

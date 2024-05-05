@@ -2,21 +2,15 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import Index from "./Screens/Index";
 import NavigationDrawer from "./Components/NavigationDrawer";
-import {
-  DefaultTheme,
-  Provider as PaperProvider,
-  useTheme,
-} from "react-native-paper";
+import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { useBreakPoint } from "./utils/breakpoint";
 import Home from "./Screens/Home";
-import LoginHeader from "./Components/LoginHeader";
 import CategoryScreen from "./Screens/CategoryScreen";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 export default function Navigation() {
-  const theme = useTheme();
   return (
     <PaperProvider theme={DefaultTheme}>
       <Stack.Navigator>

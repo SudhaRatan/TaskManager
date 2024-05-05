@@ -1,19 +1,37 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import React, { useState } from "react";
-import { FAB } from "react-native-paper";
+import { FAB, useTheme, Text } from "react-native-paper";
 import AddTask from "../Components/AddTask";
+import { useTaskStore } from "../Stores/taskStore";
 
 const CategoryScreen = () => {
   const [visible, setVisible] = useState(false);
+
   const hideDialog = () => setVisible(false);
   const showDialog = () => setVisible(true);
+
+  const theme = useTheme();
+  const styles = style(theme);
+
+  const categoryTasks = useTaskStore((state) => state.categoryTasks);
+
   return (
-    <View style={style.CategoryCont}>
-      <Text>CategoryScreen</Text>
+    <View style={styles.CategoryCont}>
+      <View>
+        {categoryTasks.length > 0 ? (
+          categoryTasks.map((item, index) => {
+            return <Text key={index}>{item.title}</Text>;
+          })
+        ) : (
+          <View style={{ alignItems: "center" }}>
+            <Text variant="headlineLarge">No tasks</Text>
+          </View>
+        )}
+      </View>
       <FAB
-        icon={"arrow-right"}
+        icon="plus"
         label="Add task"
-        style={style.fab}
+        style={styles.fab}
         size="small"
         onPress={showDialog}
       />
@@ -22,16 +40,18 @@ const CategoryScreen = () => {
   );
 };
 
-const style = StyleSheet.create({
-  CategoryCont: {
-    flex: 1,
-  },
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
-  },
-});
+const style = (props) =>
+  StyleSheet.create({
+    CategoryCont: {
+      flex: 1,
+      backgroundColor: props.colors.background,
+    },
+    fab: {
+      position: "absolute",
+      margin: 16,
+      right: 0,
+      bottom: 0,
+    },
+  });
 
 export default CategoryScreen;

@@ -1,27 +1,32 @@
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
-import { Drawer, Text, Button, List } from "react-native-paper";
-import { useDatabaseStore } from "../Stores/databaseStore";
-import EnhancedCategories from "../Observables/EnhancedCategories";
-
+import { StyleSheet, View } from "react-native";
+import {
+  Drawer,
+  Text,
+  Button,
+  List,
+  IconButton,
+  MD3Colors,
+} from "react-native-paper";
+import { EnhancedCategories } from "../Observables/EnhancedCategories";
+import { getCategories } from "../DL/CategoriesDL";
+import { useCategoryStore } from "../Stores/categoryStore";
 const NavigationDrawer = ({ state, navigation, descriptors }) => {
   const [catAcc, setCatAcc] = useState(true);
   const [categories, setCategories] = useState([]);
 
+  const setStoreCategory = useCategoryStore((state) => state.setCategory);
+
   const isSelected = (index) => index === state.index;
 
-  const database = useDatabaseStore((state) => state.database);
-
-  const categoriesCollection = database.get("categories");
-
-  const getCategories = async () => {
-    const categors = await categoriesCollection.query().fetch();
+  const getCategoriesDB = async () => {
+    const categors = await getCategories();
     setCategories(categors);
   };
 
   useEffect(() => {
-    getCategories();
+    getCategoriesDB();
   }, []);
 
   return (
@@ -41,6 +46,7 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
                 label={item.name}
                 active={isSelected(index)}
                 onPress={() => {
+                  setStoreCategory(null);
                   navigation.navigate(item.name);
                 }}
               />
@@ -52,7 +58,11 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
           title="Categories"
           left={(props) => <List.Icon {...props} icon="folder" />}
         >
-          <EnhancedCategories navigation={navigation} categories={categories} state={state} />
+          <EnhancedCategories
+            navigation={navigation}
+            categories={categories}
+            state={state}
+          />
         </List.Accordion>
       </DrawerContentScrollView>
       <View>

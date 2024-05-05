@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Platform, ScrollView, StyleSheet, View } from "react-native";
 import { Text, FAB } from "react-native-paper";
 import Animated, {
   interpolate,
@@ -9,9 +9,17 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import AddCategory from "../Components/AddCategory";
+import AddTask from "../Components/AddTask";
 
 const Home = () => {
   const [visible, setVisible] = useState(false);
+  const [addTaskVisible, setAddTaskVisible] = useState(false);
+
+  const [fabState, setFabState] = useState({ open: false });
+
+  const onStateChange = ({ open }) => setFabState({ open });
+
+  const { open } = fabState;
 
   const showDialog = () => {
     openMenu();
@@ -19,6 +27,15 @@ const Home = () => {
   };
 
   const hideDialog = () => setVisible(false);
+
+  const showTaskDialog = () => {
+    setAddTaskVisible(true);
+  };
+
+  const hideTaskDialog = () => {
+    setAddTaskVisible(false);
+  };
+
   const fab = useSharedValue(0);
 
   const openMenu = () => {
@@ -37,54 +54,80 @@ const Home = () => {
       <ScrollView>
         <Text>Home</Text>
       </ScrollView>
-      <Animated.View
-        style={[
-          style.fab,
-          useAnimatedStyle(() => ({
-            transform: [
-              {
-                translateY: interpolate(
-                  fab.value,
-                  [0, 1],
-                  [menuHeight / 2, -menuHeight]
-                ),
+      {Platform.OS === "web" ? (
+        <>
+          <Animated.View
+            style={[
+              style.fab,
+              useAnimatedStyle(() => ({
+                transform: [
+                  {
+                    translateY: interpolate(
+                      fab.value,
+                      [0, 1],
+                      [menuHeight / 2, -menuHeight]
+                    ),
+                  },
+                  { scale: interpolate(fab.value, [0, 1], [0.3, 1]) },
+                  {
+                    translateX: interpolate(
+                      fab.value,
+                      [0, 1],
+                      [menuWidth * 2, 0]
+                    ),
+                  },
+                ],
+              })),
+              { gap: 5, paddingBottom: 10 },
+            ]}
+          >
+            <FAB
+              icon="shape-plus"
+              label="Category"
+              onPress={showDialog}
+              size="medium"
+            />
+            <FAB
+              icon="checkbox-marked-circle-plus-outline"
+              label="Task"
+              size="medium"
+              onPress={showTaskDialog}
+            />
+          </Animated.View>
+          <FAB
+            onLayout={({
+              nativeEvent: {
+                layout: { height, width },
               },
-              { scale: interpolate(fab.value, [0, 1], [0.3, 1]) },
-              {
-                translateX: interpolate(fab.value, [0, 1], [menuWidth * 2, 0]),
-              },
-            ],
-          })),
-          { gap: 5, paddingBottom: 10 },
-        ]}
-      >
-        <FAB
-          icon="shape-plus"
-          label="Category"
-          onPress={showDialog}
-          size="medium"
+            }) => {
+              setMenuHeight(height);
+              setMenuWidth(width);
+            }}
+            icon="plus"
+            style={style.fab}
+            size="medium"
+            onPress={openMenu}
+          />
+        </>
+      ) : (
+        <FAB.Group
+          icon="plus"
+          open={open}
+          visible
+          onStateChange={onStateChange}
+          onPress={() => {}}
+          actions={[
+            { icon: "shape-plus", label: "Category", onPress: showDialog },
+            {
+              icon: "checkbox-marked-circle-plus-outline",
+              label: "Task",
+              onPress: showTaskDialog,
+            },
+          ]}
         />
-        <FAB
-          icon="checkbox-marked-circle-plus-outline"
-          label="Task"
-          size="medium"
-        />
-      </Animated.View>
-      <FAB
-        onLayout={({
-          nativeEvent: {
-            layout: { height, width },
-          },
-        }) => {
-          setMenuHeight(height);
-          setMenuWidth(width);
-        }}
-        icon="plus"
-        style={style.fab}
-        size="medium"
-        onPress={openMenu}
-      />
+      )}
       <AddCategory visible={visible} hideDialog={hideDialog} />
+      <AddTask visible={addTaskVisible} hideDialog={hideTaskDialog} />
     </View>
   );
 };

@@ -1,7 +1,8 @@
 import { Button, Dialog, Portal, TextInput } from "react-native-paper";
 import { useBreakPoint } from "../utils/breakpoint";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useDatabaseStore } from "../Stores/databaseStore";
+import { addCategory } from "../DL/CategoriesDL";
 
 const AddCategory = ({ visible, hideDialog }) => {
   const [title, setTitle] = useState("");
@@ -9,14 +10,10 @@ const AddCategory = ({ visible, hideDialog }) => {
   const Add = async () => {
     if (title !== "") {
       await database.write(async () => {
-        const newCategory = await database
-          .get("categories")
-          .create((category) => {
-            category.title = title;
-          });
-        console.log(newCategory);
-        hideDialog();
-        setTitle("");
+        addCategory(title).then((newCategory) => {
+          hideDialog();
+          setTitle("");
+        });
       });
     }
   };
@@ -32,7 +29,12 @@ const AddCategory = ({ visible, hideDialog }) => {
       >
         <Dialog.Title>Add Category</Dialog.Title>
         <Dialog.Content>
-          <TextInput value={title} onChangeText={setTitle} label="Category" />
+          <TextInput
+            autoFocus={visible}
+            value={title}
+            onChangeText={setTitle}
+            label="Category"
+          />
         </Dialog.Content>
         <Dialog.Actions>
           <Button onPress={hideDialog}>Cancel</Button>
