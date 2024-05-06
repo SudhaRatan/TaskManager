@@ -1,5 +1,5 @@
-import { View, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import { View, StyleSheet, ScrollView } from "react-native";
+import React, { useRef, useState } from "react";
 import { FAB, useTheme, Text } from "react-native-paper";
 import AddTask from "../Components/AddTask";
 import { useCategoryStore } from "../Stores/categoryStore";
@@ -7,6 +7,9 @@ import { withObservables } from "@nozbe/watermelondb/react";
 import { useDatabaseStore } from "../Stores/databaseStore";
 import { Q } from "@nozbe/watermelondb";
 import CategoryTask from "../Components/CategoryTask";
+import { useBreakPoint } from "../utils/breakpoint";
+import ConfirmDialog from "../Components/ConfirmDialog";
+import { deleteTask } from "../DL/TasksDL";
 
 const CategoryScreen = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
@@ -20,20 +23,43 @@ const CategoryScreen = ({ navigation }) => {
   const category = useCategoryStore((state) => state.category);
   const database = useDatabaseStore((state) => state.database);
 
+  const DeleteRef = useRef();
+
   const CategoryTasks = ({ tasks }) => {
     return (
-      <View style={{ gap: 10, padding: 10 }}>
+      <ScrollView
+        style={{
+          marginVertical: 10,
+        }}
+        contentContainerStyle={{
+          flex: 1,
+          gap: 5,
+          paddingTop: 0,
+          paddingHorizontal: useBreakPoint(15, 30, 40),
+        }}
+      >
         {tasks.length > 0 ? (
           tasks.map((task, index) => {
-            return <CategoryTask task={task} index={index} key={index} />;
+            return (
+              <CategoryTask
+                del={ShowDeleteDialog}
+                task={task}
+                index={index}
+                key={index}
+              />
+            );
           })
         ) : (
           <View style={{ alignItems: "center" }}>
             <Text variant="headlineLarge">No tasks</Text>
           </View>
         )}
-      </View>
+      </ScrollView>
     );
+  };
+  const ShowDeleteDialog = (task) => {
+    DeleteRef.current.showDialog();
+    DeleteRef.current.setParams(task);
   };
 
   const enhance =
@@ -57,7 +83,7 @@ const CategoryScreen = ({ navigation }) => {
 
   return (
     <View style={styles.CategoryCont}>
-      <View>
+      <View style={{ height: "100%" }}>
         <EnhancedTasks />
       </View>
       <FAB
@@ -68,6 +94,13 @@ const CategoryScreen = ({ navigation }) => {
         onPress={showDialog}
       />
       <AddTask hideDialog={hideDialog} visible={visible} />
+      <ConfirmDialog
+        ref={DeleteRef}
+        text="Are you sure you want to delete this task?"
+        okText="Delete"
+        iconName="alert"
+        action={deleteTask}
+      />
     </View>
   );
 };

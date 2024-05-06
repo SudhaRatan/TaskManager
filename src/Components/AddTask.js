@@ -24,7 +24,6 @@ const AddTask = ({ visible, hideDialog }) => {
   const Add = async () => {
     if (title !== "" && category !== null) {
       addTask({ title, categoryId: category.id }).then((newTask) => {
-        console.log(newTask);
         hideDialog();
         setTitle("");
       });

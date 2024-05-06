@@ -32,3 +32,10 @@ export const addTask = ({ title, categoryId }) => {
     });
   });
 };
+
+export const deleteTask = async (task) => {
+  await database.write(async () => {
+    await task.destroyPermanently();
+    return true;
+  });
+};

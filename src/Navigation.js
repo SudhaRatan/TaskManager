@@ -6,6 +6,7 @@ import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { useBreakPoint } from "./utils/breakpoint";
 import Home from "./Screens/Home";
 import CategoryScreen from "./Screens/CategoryScreen";
+import { useCategoryStore } from "./Stores/categoryStore";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -34,6 +35,7 @@ export default function Navigation() {
 }
 
 function MainDrawer() {
+  const category = useCategoryStore((state) => state.category);
   return (
     <Drawer.Navigator
       screenOptions={{
@@ -48,7 +50,17 @@ function MainDrawer() {
         }}
         component={Home}
       />
-      <Drawer.Screen name="Category" component={CategoryScreen} />
+      <Drawer.Screen
+        name="Category"
+        options={{
+          headerStyle: {
+            elevation: 0,
+            borderBottomWidth: 0,
+          },
+          headerTitle: category ? category.title.toString() : "Category",
+        }}
+        component={CategoryScreen}
+      />
     </Drawer.Navigator>
   );
 }
