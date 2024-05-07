@@ -31,12 +31,7 @@ const CategoryScreen = ({ navigation }) => {
         style={{
           marginVertical: 10,
         }}
-        contentContainerStyle={{
-          flex: 1,
-          gap: 5,
-          paddingTop: 0,
-          paddingHorizontal: useBreakPoint(15, 30, 40),
-        }}
+        contentContainerStyle={styles.scrollContainer}
       >
         {tasks.length > 0 ? (
           tasks.map((task, index) => {
@@ -116,6 +111,11 @@ const style = (props) =>
       margin: 16,
       right: 0,
       bottom: 0,
+    },
+    scrollContainer: {
+      gap: 5,
+      paddingTop: 0,
+      paddingHorizontal: useBreakPoint(15, 30, 40),
     },
   });
 

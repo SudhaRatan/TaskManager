@@ -29,6 +29,7 @@ const Home = () => {
   const hideDialog = () => setVisible(false);
 
   const showTaskDialog = () => {
+    openMenu();
     setAddTaskVisible(true);
   };
 

@@ -70,12 +70,15 @@ const AddTask = ({ visible, hideDialog }) => {
             onDismiss={closeMenu}
             anchor={<View style={{ height: 10 }} />}
           >
-            <EnhancedCategoriesDropdown
-              closeMenu={closeMenu}
-            />
+            <EnhancedCategoriesDropdown closeMenu={closeMenu} />
           </Menu>
 
-          <TextInput value={title} onChangeText={setTitle} label="Task" />
+          <TextInput
+            value={title}
+            onChangeText={setTitle}
+            label="Task"
+            autoFocus={category ? true : false}
+          />
         </Dialog.Content>
         <Dialog.Actions>
           <Button onPress={hideDialog}>Cancel</Button>

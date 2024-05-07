@@ -33,6 +33,14 @@ export const addTask = ({ title, categoryId }) => {
   });
 };
 
+export const changeTaskTitle = async (task, title) => {
+  await database.write(async () => {
+    await task.update(() => {
+      task.title = title;
+    });
+  });
+};
+
 export const deleteTask = async (task) => {
   await database.write(async () => {
     await task.destroyPermanently();
