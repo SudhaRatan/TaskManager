@@ -1,11 +1,12 @@
 import { withObservables } from "@nozbe/watermelondb/react";
 import { useDatabaseStore } from "../Stores/databaseStore";
-import { Drawer, IconButton, MD3Colors, Menu } from "react-native-paper";
+import { Drawer, Menu } from "react-native-paper";
 import { useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { useCategoryStore } from "../Stores/categoryStore";
 import { useTaskStore } from "../Stores/taskStore";
 import { getTasksForCategory } from "../DL/TasksDL";
+import { runOnJS } from "react-native-reanimated";
 
 const database = useDatabaseStore.getState().database;
 
@@ -38,10 +39,12 @@ function Categories({ categories, navigation, state }) {
             label={category.title}
             active={isActive(index)}
             onPress={() => {
-              getTasks(category.id);
-              setSelIndex(index);
-              setCategory(category);
               navigation.navigate("Category");
+              runOnJS(() => {
+                getTasks(category.id);
+                setSelIndex(index);
+                setCategory(category);
+              })();
             }}
           />
         );

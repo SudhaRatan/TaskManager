@@ -12,7 +12,7 @@ import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 import { changeTaskTitle, checkTask } from "../DL/TasksDL";
 import { withObservables } from "@nozbe/watermelondb/react";
 
-const CategoryTask = ({ task, del }) => {
+const CategoryTask = ({ task, del, categoryId }) => {
   const [menuVisible, setMenuvisible] = useState(false);
   const [canEdit, setCanEdit] = useState(false);
   const [editText, setEditText] = useState(task.title);

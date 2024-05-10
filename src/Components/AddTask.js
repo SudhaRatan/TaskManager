@@ -14,17 +14,21 @@ import { getCategories } from "../DL/CategoriesDL";
 import { EnhancedCategoriesDropdown } from "../Observables/EnhancedCategories";
 import { useCategoryStore } from "../Stores/categoryStore";
 import { addTask } from "../DL/TasksDL";
+import { useTaskStore } from "../Stores/taskStore";
 
-const AddTask = ({ visible, hideDialog }) => {
+const AddTask = ({ visible, hideDialog, categoryTasks }) => {
   const [title, setTitle] = useState("");
   const [visible1, setVisible1] = useState(false);
   const [menuWidth, setMenuWidth] = useState(0);
   const category = useCategoryStore((state) => state.category);
 
+  const setCategoryTasks = useTaskStore((state) => state.setCategoryTasks);
+
   const Add = async () => {
     if (title !== "" && category !== null) {
       addTask({ title, categoryId: category.id }).then((newTask) => {
         hideDialog();
+        setCategoryTasks([...categoryTasks, newTask]);
         setTitle("");
       });
     }
