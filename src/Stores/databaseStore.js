@@ -7,6 +7,7 @@ import { Database } from "@nozbe/watermelondb";
 import { Platform } from "react-native";
 import Category from "../model/Category";
 import Task from "../model/Task";
+import SubTask from "../model/SubTask";
 
 const adapter =
   Platform.OS === "web"
@@ -64,6 +65,7 @@ export const useDatabaseStore = create((set) => ({
       // Post, // ⬅️ You'll add Models to Watermelon here
       Category,
       Task,
+      SubTask
     ],
   }),
 }));

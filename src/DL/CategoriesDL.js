@@ -19,3 +19,18 @@ export const addCategory = async (title) => {
     });
   });
 };
+
+export const updateCategory = async (category,title) => {
+  await database.write(async () => {
+    await category.update(() => {
+      category.title = title
+    });
+  });
+}
+
+export const deleteCategory = async (category) => {
+  await database.write(async () => {
+    await category.destroyPermanently();
+    return true;
+  });
+};

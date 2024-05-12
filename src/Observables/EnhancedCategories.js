@@ -1,12 +1,13 @@
 import { withObservables } from "@nozbe/watermelondb/react";
 import { useDatabaseStore } from "../Stores/databaseStore";
-import { Drawer, Menu } from "react-native-paper";
+import {Menu  } from "react-native-paper";
 import { useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { useCategoryStore } from "../Stores/categoryStore";
 import { useTaskStore } from "../Stores/taskStore";
 import { getTasksForCategory } from "../DL/TasksDL";
 import { runOnJS } from "react-native-reanimated";
+import CategoryDrawerItem from "../Components/CategoryDrawerItem";
 
 const database = useDatabaseStore.getState().database;
 
@@ -27,6 +28,7 @@ function Categories({ categories, navigation, state }) {
     setCategoryTasks(tasks);
   };
 
+
   useState(() => {
     if (categories.length > 0) getTasks(categories[0].id);
   }, []);
@@ -34,18 +36,15 @@ function Categories({ categories, navigation, state }) {
     <>
       {categories.map((category, index) => {
         return (
-          <Drawer.Item
+          <CategoryDrawerItem
+            category={category}
+            index={index}
             key={index}
-            label={category.title}
-            active={isActive(index)}
-            onPress={() => {
-              navigation.navigate("Category");
-              runOnJS(() => {
-                getTasks(category.id);
-                setSelIndex(index);
-                setCategory(category);
-              })();
-            }}
+            isActive={isActive}
+            navigation={navigation}
+            getTasks={getTasks}
+            setCategory={setCategory}
+            setSelIndex={setSelIndex}
           />
         );
       })}
@@ -55,6 +54,13 @@ function Categories({ categories, navigation, state }) {
 
 function CategoriesDropdown({ categories, closeMenu }) {
   const setCategory = useCategoryStore((state) => state.setCategory);
+
+  const setCategoryTasks = useTaskStore((state) => state.setCategoryTasks);
+
+  const getTasks = async (catId) => {
+    const tasks = await getTasksForCategory(catId);
+    setCategoryTasks(tasks);
+  };
   return (
     <ScrollView style={{ maxHeight: 300 }}>
       {categories.map((category, index) => {
@@ -62,8 +68,11 @@ function CategoriesDropdown({ categories, closeMenu }) {
           <Menu.Item
             key={category.id}
             onPress={() => {
-              setCategory(category);
-              closeMenu();
+              runOnJS(() => {
+                getTasks(category.id);
+                setCategory(category);
+                closeMenu();
+              })();
             }}
             style={style.menuItem}
             title={category.title}

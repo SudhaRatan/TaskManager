@@ -1,7 +1,7 @@
 import { appSchema, tableSchema } from "@nozbe/watermelondb";
 
 export default appSchema({
-  version: 1,
+  version: 2,
   tables: [
     tableSchema({
       name: "categories",
@@ -15,5 +15,13 @@ export default appSchema({
         { name: "is_checked", type: "boolean" },
       ],
     }),
+    tableSchema({
+      name:"subtasks",
+      columns:[
+        {name:"title", type:"string"},
+        {name:"task_id",type:"string"},
+        {name:"is_checked", type:"boolean"}
+      ]
+    })
   ],
 });

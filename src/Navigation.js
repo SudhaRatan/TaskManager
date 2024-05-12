@@ -2,11 +2,13 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import Index from "./Screens/Index";
 import NavigationDrawer from "./Components/NavigationDrawer";
-import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
+import { DefaultTheme, Provider as PaperProvider, Text } from "react-native-paper";
 import { useBreakPoint } from "./utils/breakpoint";
 import Home from "./Screens/Home";
 import CategoryScreen from "./Screens/CategoryScreen";
 import { useCategoryStore } from "./Stores/categoryStore";
+import { View } from "react-native";
+import CategoryHeaderOptions from "./Components/CategoryHeaderOptions";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -52,13 +54,14 @@ function MainDrawer() {
       />
       <Drawer.Screen
         name="Category"
-        options={{
+        options={({navigation,route}) => ({
           headerStyle: {
             elevation: 0,
             borderBottomWidth: 0,
           },
           headerTitle: category ? category.title.toString() : "Category",
-        }}
+          headerRight:() => <CategoryHeaderOptions navigation={navigation} />
+        })}
         component={CategoryScreen}
       />
     </Drawer.Navigator>
