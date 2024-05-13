@@ -24,6 +24,7 @@ function Categories({ categories, navigation, state }) {
   const setCategoryTasks = useTaskStore((state) => state.setCategoryTasks);
 
   const getTasks = async (catId) => {
+    setCategoryTasks([])
     const tasks = await getTasksForCategory(catId);
     setCategoryTasks(tasks);
   };
@@ -58,6 +59,7 @@ function CategoriesDropdown({ categories, closeMenu }) {
   const setCategoryTasks = useTaskStore((state) => state.setCategoryTasks);
 
   const getTasks = async (catId) => {
+    setCategoryTasks([])
     const tasks = await getTasksForCategory(catId);
     setCategoryTasks(tasks);
   };

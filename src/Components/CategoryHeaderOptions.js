@@ -20,7 +20,7 @@ const CategoryHeaderOptions = () => {
 
 const style = StyleSheet.create({
   iconContainer: {
-    padding: 20,
+    paddingHorizontal: 12,
     height: "100%",
     justifyContent: "center",
   },
