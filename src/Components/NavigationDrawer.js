@@ -14,7 +14,6 @@ import { getCategories } from "../DL/CategoriesDL";
 import { useCategoryStore } from "../Stores/categoryStore";
 const NavigationDrawer = ({ state, navigation, descriptors }) => {
   const [catAcc, setCatAcc] = useState(true);
-  const [categories, setCategories] = useState([]);
 
   const setStoreCategory = useCategoryStore((state) => state.setCategory);
 
@@ -23,7 +22,6 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
   const getCategoriesDB = async () => {
     const categors = await getCategories();
     setStoreCategory(categors[0]);
-    setCategories(categors);
   };
 
   useEffect(() => {
