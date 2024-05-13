@@ -1,13 +1,11 @@
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import {
   Drawer,
   Text,
   Button,
   List,
-  IconButton,
-  MD3Colors,
 } from "react-native-paper";
 import { EnhancedCategories } from "../Observables/EnhancedCategories";
 import { getCategories } from "../DL/CategoriesDL";
@@ -32,7 +30,7 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
     <>
       <DrawerContentScrollView>
         <Text
-          variant="headlineLarge"
+          variant="headlineSmall"
           style={{ textAlign: "center", padding: 10 }}
         >
           Task Manager
