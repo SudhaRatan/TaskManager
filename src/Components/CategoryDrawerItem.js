@@ -36,7 +36,8 @@ const CategoryDrawerItem = ({
 };
 
 const enhance = withObservables(['category'],({category}) => ({
-    countTasks:category.tasks.observeCount()
+    countTasks:category.tasks.observeCount(),
+    category
 }))
 
 export default enhance(CategoryDrawerItem);

@@ -1,20 +1,31 @@
 import { Button, Dialog, Portal, TextInput } from "react-native-paper";
 import { useBreakPoint } from "../utils/breakpoint";
-import { useRef, useState } from "react";
-import { useDatabaseStore } from "../Stores/databaseStore";
-import { addCategory } from "../DL/CategoriesDL";
+import { useState } from "react";
+import { addCategory, updateCategory } from "../DL/CategoriesDL";
+import { useCategoryStore } from "../Stores/categoryStore";
+import { runOnJS } from "react-native-reanimated";
 
-const AddCategory = ({ visible, hideDialog }) => {
-  const [title, setTitle] = useState("");
-  const database = useDatabaseStore((state) => state.database);
+const AddCategory = ({ visible, hideDialog, update, closeMenu, category }) => {
+  const [title, setTitle] = useState(update ? category.title : "");
+
+  const setCategory = useCategoryStore((state) => state.setCategory);
+
   const Add = async () => {
     if (title !== "") {
-      await database.write(async () => {
+      if (update) {
+        setCategory({title:"Updating title..."})
+        updateCategory(category, title).then((updatedCategory) => {
+            setCategory(updatedCategory);
+          hideDialog();
+          setTitle("");
+          closeMenu && closeMenu();
+        });
+      } else {
         addCategory(title).then((newCategory) => {
           hideDialog();
           setTitle("");
         });
-      });
+      }
     }
   };
   return (
@@ -27,7 +38,7 @@ const AddCategory = ({ visible, hideDialog }) => {
         visible={visible}
         onDismiss={hideDialog}
       >
-        <Dialog.Title>Add Category</Dialog.Title>
+        <Dialog.Title>{update ? "Update" : "Add"} Category</Dialog.Title>
         <Dialog.Content>
           <TextInput
             autoFocus={visible}

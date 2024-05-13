@@ -1,7 +1,7 @@
 import { withObservables } from "@nozbe/watermelondb/react";
 import { useDatabaseStore } from "../Stores/databaseStore";
-import {Menu  } from "react-native-paper";
-import { useState } from "react";
+import { Menu } from "react-native-paper";
+import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { useCategoryStore } from "../Stores/categoryStore";
 import { useTaskStore } from "../Stores/taskStore";
@@ -24,15 +24,18 @@ function Categories({ categories, navigation, state }) {
   const setCategoryTasks = useTaskStore((state) => state.setCategoryTasks);
 
   const getTasks = async (catId) => {
-    setCategoryTasks([])
+    setCategoryTasks([]);
     const tasks = await getTasksForCategory(catId);
     setCategoryTasks(tasks);
   };
 
-
-  useState(() => {
-    if (categories.length > 0) getTasks(categories[0].id);
+  useEffect(() => {
+    if (categories.length > 0) {
+      getTasks(categories[0].id);
+      setCategory(categories[0])
+    }
   }, []);
+
   return (
     <>
       {categories.map((category, index) => {
@@ -59,7 +62,7 @@ function CategoriesDropdown({ categories, closeMenu }) {
   const setCategoryTasks = useTaskStore((state) => state.setCategoryTasks);
 
   const getTasks = async (catId) => {
-    setCategoryTasks([])
+    setCategoryTasks([]);
     const tasks = await getTasksForCategory(catId);
     setCategoryTasks(tasks);
   };

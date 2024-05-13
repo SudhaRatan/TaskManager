@@ -7,12 +7,16 @@ import ConfirmDialog from "../Components/ConfirmDialog";
 import { deleteTask } from "../DL/TasksDL";
 import CategoryTasks from "../Observables/EnhancedTasks";
 import { useTaskStore } from "../Stores/taskStore";
+import AddCategory from "../Components/AddCategory";
 
 const CategoryScreen = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
+  const [categoryDialog, setCategoryDialog] = useState(false);
 
   const hideDialog = () => setVisible(false);
   const showDialog = () => setVisible(true);
+  const hideCategoryDialog = () => setCategoryDialog(false);
+  const showCategoryDialog = () => setCategoryDialog(true);
 
   const theme = useTheme();
   const styles = style(theme);
@@ -44,20 +48,19 @@ const CategoryScreen = ({ navigation }) => {
           onDismiss={() => setCategoryMenu(false)}
           anchor={<View style={{ width: 1, height: 1 }} />}
         >
-          <Menu.Item leadingIcon="pencil" title="Edit" />
+          <Menu.Item
+            leadingIcon="pencil"
+            onPress={showCategoryDialog}
+            title="Edit"
+          />
           <Menu.Item leadingIcon="delete" onPress={() => {}} title="Delete" />
         </Menu>
       </View>
       <View style={{ flex: 1 }}>
-        {category ? (
-          <CategoryTasks
-            ShowDeleteDialog={ShowDeleteDialog}
-            category={category}
-            tasks={categoryTasks}
-          />
-        ) : (
-          <Text>Loading</Text>
-        )}
+        <CategoryTasks
+          ShowDeleteDialog={ShowDeleteDialog}
+          tasks={categoryTasks}
+        />
       </View>
       <FAB icon="plus" style={styles.fab} size="medium" onPress={showDialog} />
       <AddTask
@@ -75,6 +78,15 @@ const CategoryScreen = ({ navigation }) => {
           deleteTask(task);
         }}
       />
+      {categoryDialog && (
+        <AddCategory
+          category={category}
+          update={true}
+          visible={categoryDialog}
+          hideDialog={hideCategoryDialog}
+          closeMenu={() => setCategoryMenu(false)}
+        />
+      )}
     </View>
   );
 };

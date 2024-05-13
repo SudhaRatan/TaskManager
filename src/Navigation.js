@@ -59,7 +59,7 @@ function MainDrawer() {
             elevation: 0,
             borderBottomWidth: 0,
           },
-          headerTitle: category ? category.title.toString() : "Category",
+          headerTitle: category ? category.title : "Category",
           headerRight:() => <CategoryHeaderOptions navigation={navigation} />
         })}
         component={CategoryScreen}

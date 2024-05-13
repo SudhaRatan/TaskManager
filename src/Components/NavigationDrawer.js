@@ -8,7 +8,6 @@ import {
   List,
 } from "react-native-paper";
 import { EnhancedCategories } from "../Observables/EnhancedCategories";
-import { getCategories } from "../DL/CategoriesDL";
 import { useCategoryStore } from "../Stores/categoryStore";
 const NavigationDrawer = ({ state, navigation, descriptors }) => {
   const [catAcc, setCatAcc] = useState(true);
@@ -16,15 +15,6 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
   const setStoreCategory = useCategoryStore((state) => state.setCategory);
 
   const isSelected = (index) => index === state.index;
-
-  const getCategoriesDB = async () => {
-    const categors = await getCategories();
-    setStoreCategory(categors[0]);
-  };
-
-  useEffect(() => {
-    getCategoriesDB();
-  }, []);
 
   return (
     <>
