@@ -56,7 +56,7 @@ const AddCategory = ({ visible, hideDialog, update, closeMenu, category }) => {
           >
             Cancel
           </Button>
-          <Button onPress={Add}>Add</Button>
+          <Button onPress={Add}>{update ? "Update": "Add"}</Button>
         </Dialog.Actions>
       </Dialog>
     </Portal>
