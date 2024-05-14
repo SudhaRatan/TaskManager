@@ -4,7 +4,7 @@ import { Button, Dialog, Portal } from "react-native-paper";
 import { useBreakPoint } from "../utils/breakpoint";
 
 const ConfirmDialog = forwardRef(
-  ({ iconName, text, dismissText, okText, action }, ref) => {
+  ({ iconName, title, text, dismissText, okText, action }, ref) => {
     const [visible, setVisible] = useState(false);
 
     const hideDialog = () => {
@@ -38,7 +38,9 @@ const ConfirmDialog = forwardRef(
           }}
         >
           {iconName && <Dialog.Icon size={30} icon={iconName} />}
-          <Dialog.Title style={{ textAlign: "center" }}>Alert</Dialog.Title>
+          <Dialog.Title style={{ textAlign: "center" }}>
+            {title ? title : "Alert"}
+          </Dialog.Title>
           <Dialog.Content>
             <Text style={{ fontSize: 16 }} variant="bodyMedium">
               {text}
@@ -51,7 +53,7 @@ const ConfirmDialog = forwardRef(
             <Button
               onPress={() => {
                 action(params);
-                hideDialog()
+                hideDialog();
               }}
             >
               {okText ? okText : "Ok"}

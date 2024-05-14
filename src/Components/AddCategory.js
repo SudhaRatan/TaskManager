@@ -13,9 +13,9 @@ const AddCategory = ({ visible, hideDialog, update, closeMenu, category }) => {
   const Add = async () => {
     if (title !== "") {
       if (update) {
-        setCategory({title:"Updating title..."})
+        setCategory({ title: "Updating title..." });
         updateCategory(category, title).then((updatedCategory) => {
-            setCategory(updatedCategory);
+          setCategory(updatedCategory);
           hideDialog();
           setTitle("");
           closeMenu && closeMenu();
@@ -48,7 +48,14 @@ const AddCategory = ({ visible, hideDialog, update, closeMenu, category }) => {
           />
         </Dialog.Content>
         <Dialog.Actions>
-          <Button onPress={hideDialog}>Cancel</Button>
+          <Button
+            onPress={() => {
+              closeMenu && closeMenu();
+              hideDialog();
+            }}
+          >
+            Cancel
+          </Button>
           <Button onPress={Add}>Add</Button>
         </Dialog.Actions>
       </Dialog>

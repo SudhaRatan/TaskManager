@@ -8,6 +8,7 @@ import { deleteTask } from "../DL/TasksDL";
 import CategoryTasks from "../Observables/EnhancedTasks";
 import { useTaskStore } from "../Stores/taskStore";
 import AddCategory from "../Components/AddCategory";
+import { deleteCategory } from "../DL/CategoriesDL";
 
 const CategoryScreen = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
@@ -28,6 +29,7 @@ const CategoryScreen = ({ navigation }) => {
   const setCategoryMenu = useCategoryStore((state) => state.setCategoryMenu);
 
   const DeleteRef = useRef();
+  const DeleteCategoryRef = useRef();
 
   const ShowDeleteDialog = (task) => {
     DeleteRef.current.showDialog();
@@ -36,6 +38,12 @@ const CategoryScreen = ({ navigation }) => {
 
   const DeleteTask = (task) => {
     setCategoryTasks(categoryTasks.filter((t) => task.id !== t.id));
+  };
+
+  const CategoryDeleteDialog = () => {
+    setCategoryMenu(false);
+    DeleteCategoryRef.current.showDialog();
+    DeleteCategoryRef.current.setParams(category);
   };
 
   return (
@@ -50,10 +58,17 @@ const CategoryScreen = ({ navigation }) => {
         >
           <Menu.Item
             leadingIcon="pencil"
-            onPress={showCategoryDialog}
+            onPress={() => {
+              setCategoryMenu(false)
+              showCategoryDialog();
+            }}
             title="Edit"
           />
-          <Menu.Item leadingIcon="delete" onPress={() => {}} title="Delete" />
+          <Menu.Item
+            leadingIcon="delete"
+            onPress={CategoryDeleteDialog}
+            title="Delete"
+          />
         </Menu>
       </View>
       <View style={{ flex: 1 }}>
@@ -87,6 +102,18 @@ const CategoryScreen = ({ navigation }) => {
           closeMenu={() => setCategoryMenu(false)}
         />
       )}
+      <ConfirmDialog
+        ref={DeleteCategoryRef}
+        iconName="alert"
+        title="Are you sure you want to delete this category ?"
+        text="All tasks in this Category will be deleted"
+        dismissText="No"
+        okText="Yes"
+        action={async (cat) => {
+          navigation.navigate("Home");
+          await deleteCategory(cat);
+        }}
+      />
     </View>
   );
 };

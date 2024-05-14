@@ -26,7 +26,7 @@ const CategoryTask = ({ task, del, categoryId }) => {
   };
 
   const upadateTaskTitle = async () => {
-    setCanEdit(false)
+    setCanEdit(false);
     await changeTaskTitle(task, editText);
   };
 
@@ -62,7 +62,7 @@ const CategoryTask = ({ task, del, categoryId }) => {
             color={theme.colors.primary}
           />
           {canEdit ? (
-            <KeyboardAvoidingView
+            <View
               style={{
                 flex: 1,
                 flexDirection: "row",
@@ -87,15 +87,18 @@ const CategoryTask = ({ task, del, categoryId }) => {
                 value={editText}
                 onChangeText={setEditText}
               />
-              <TouchableRipple onPress={() => {
-                setCanEdit(false)
-                setEditText(task.title)}}>
+              <TouchableRipple
+                onPress={() => {
+                  setCanEdit(false);
+                  setEditText(task.title);
+                }}
+              >
                 <Icon source="close" size={24} />
               </TouchableRipple>
               <TouchableRipple onPress={upadateTaskTitle}>
                 <Icon source="check" size={24} />
               </TouchableRipple>
-            </KeyboardAvoidingView>
+            </View>
           ) : (
             <Text
               onLayout={({
@@ -103,7 +106,7 @@ const CategoryTask = ({ task, del, categoryId }) => {
                   layout: { height },
                 },
               }) => {
-                setHeight(height+10);
+                setHeight(height + 10);
               }}
               style={[
                 style.text,
@@ -158,7 +161,8 @@ const style = StyleSheet.create({
   text: {
     verticalAlign: "middle",
     textAlignVertical: "center",
-    fontSize:14
+    fontSize: 14,
+    flex: 1,
   },
 });
 
