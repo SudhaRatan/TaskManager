@@ -75,6 +75,7 @@ const CategoryScreen = ({ navigation }) => {
         <CategoryTasks
           ShowDeleteDialog={ShowDeleteDialog}
           tasks={categoryTasks}
+          navigation={navigation}
         />
       </View>
       <FAB icon="plus" style={styles.fab} size="medium" onPress={showDialog} />

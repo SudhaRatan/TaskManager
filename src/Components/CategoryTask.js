@@ -8,11 +8,11 @@ import {
   Menu,
   TextInput,
 } from "react-native-paper";
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { changeTaskTitle, checkTask } from "../DL/TasksDL";
 import { withObservables } from "@nozbe/watermelondb/react";
 
-const CategoryTask = ({ task, del, categoryId }) => {
+const CategoryTask = ({ task, del, categoryId, navigation }) => {
   const [menuVisible, setMenuvisible] = useState(false);
   const [canEdit, setCanEdit] = useState(false);
   const [editText, setEditText] = useState(task.title);
@@ -140,6 +140,14 @@ const CategoryTask = ({ task, del, categoryId }) => {
               title="Delete"
             />
           </Menu>
+          {!canEdit && (
+            <TouchableRipple
+              style={{ padding: 0 }}
+              onPress={() => navigation.navigate("subtask",{taskId:task.id})}
+            >
+              <Icon size={24} source="chevron-right" />
+            </TouchableRipple>
+          )}
         </View>
       </TouchableRipple>
     </Surface>

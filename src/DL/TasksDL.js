@@ -47,3 +47,14 @@ export const deleteTask = async (task) => {
     return true;
   });
 };
+
+export const getTaskDetails = async (taskId) => {
+  try {
+    const task = await database.get("tasks").find(taskId);
+    return task
+  } catch (error) {
+    console.log(error);
+    console.log(error)
+    return null
+  }
+};

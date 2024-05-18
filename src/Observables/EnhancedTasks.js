@@ -3,7 +3,7 @@ import CategoryTask from "../Components/CategoryTask";
 import { useBreakPoint } from "../utils/breakpoint";
 
 
-const CategoryTasks = ({ tasks, ShowDeleteDialog }) => {
+const CategoryTasks = ({ tasks, ShowDeleteDialog,navigation }) => {
   const styles = style({ useBreakPoint });
 
   return (
@@ -20,6 +20,7 @@ const CategoryTasks = ({ tasks, ShowDeleteDialog }) => {
             task={task}
             index={index}
             key={index}
+            navigation={navigation}
           />
         );
       })}
