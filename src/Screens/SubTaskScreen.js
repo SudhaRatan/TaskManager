@@ -43,6 +43,7 @@ const styles = (props) => StyleSheet.create({
       flex:1,
       padding:10,
       backgroundColor:props.colors.background,
+      alignItems:"center"
   }
 })
 
