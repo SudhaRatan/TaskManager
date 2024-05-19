@@ -20,7 +20,7 @@ const CategoryDrawerItem = ({
       key={index}
       label={category.title}
       right={() => (
-        <Text style={{ color: theme.colors.secondary }}>{countTasks}</Text>
+        <Text style={{ color: theme.colors.secondary }}>{countTasks !== 0 && countTasks}</Text>
       )}
       active={isActive(index)}
       onPress={() => {

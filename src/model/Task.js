@@ -14,6 +14,7 @@ export default class Task extends Model {
   };
   @text("title") title;
   @field("is_checked") isChecked;
+  @text("description") description;
   @relation("category_id", "categories") category;
   @children("subtasks") subTasks;
 }

@@ -1,7 +1,7 @@
 import { appSchema, tableSchema } from "@nozbe/watermelondb";
 
 export default appSchema({
-  version: 2,
+  version: 3,
   tables: [
     tableSchema({
       name: "categories",
@@ -11,17 +11,18 @@ export default appSchema({
       name: "tasks",
       columns: [
         { name: "title", type: "string" },
+        { name: "description", type: "string" },
         { name: "category_id", type: "string" },
         { name: "is_checked", type: "boolean" },
       ],
     }),
     tableSchema({
-      name:"subtasks",
-      columns:[
-        {name:"title", type:"string"},
-        {name:"task_id",type:"string"},
-        {name:"is_checked", type:"boolean"}
-      ]
-    })
+      name: "subtasks",
+      columns: [
+        { name: "title", type: "string" },
+        { name: "task_id", type: "string" },
+        { name: "is_checked", type: "boolean" },
+      ],
+    }),
   ],
 });

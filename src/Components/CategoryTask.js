@@ -169,7 +169,7 @@ const style = StyleSheet.create({
   text: {
     verticalAlign: "middle",
     textAlignVertical: "center",
-    fontSize: 14,
+    fontSize: 15,
     flex: 1,
   },
 });

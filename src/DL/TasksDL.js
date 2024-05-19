@@ -58,3 +58,11 @@ export const getTaskDetails = async (taskId) => {
     return null
   }
 };
+
+export async function UpdateTaskDescription({ task, description }) {
+  await database.write(async () => {
+    await task.update(() => {
+      task.description = description;
+    });
+  });
+}
