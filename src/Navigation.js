@@ -5,13 +5,11 @@ import NavigationDrawer from "./Components/NavigationDrawer";
 import {
   DefaultTheme,
   Provider as PaperProvider,
-  Text,
 } from "react-native-paper";
 import { useBreakPoint } from "./utils/breakpoint";
 import Home from "./Screens/Home";
 import CategoryScreen from "./Screens/CategoryScreen";
 import { useCategoryStore } from "./Stores/categoryStore";
-import { View } from "react-native";
 import CategoryHeaderOptions from "./Components/CategoryHeaderOptions";
 import SubTaskScreen from "./Screens/SubTaskScreen";
 
@@ -41,7 +39,11 @@ export default function Navigation() {
           }}
         />
         <Stack.Screen
-          options={{ presentation: "modal", headerTitle:"Task details" }}
+          options={{
+            presentation: "modal",
+            headerTitle: "Task details",
+            headerStyle: { borderBottomWidth: 0 },
+          }}
           name="subtask"
           component={SubTaskScreen}
         />

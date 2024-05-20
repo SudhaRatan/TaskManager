@@ -1,10 +1,11 @@
 import { StyleSheet, View } from "react-native";
 import { useState } from "react";
-import { Button, TextInput, Text } from "react-native-paper";
+import { Button, TextInput, Text, Snackbar } from "react-native-paper";
 import { useBreakPoint } from "../utils/breakpoint";
 
 const Index = ({ navigation }) => {
   const [text, setText] = useState("");
+  const [showSnackbar, setShowSnackbar] = useState(false);
 
   return (
     <View style={styles.mainContainer}>
@@ -22,14 +23,46 @@ const Index = ({ navigation }) => {
           style={{ width: "100%" }}
           onChangeText={(text) => setText(text)}
         />
-        <Button
-          mode="contained"
-          elevation={2}
-          onPress={() => navigation.navigate("app")}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
         >
-          Login
-        </Button>
+          <Button
+            mode="text"
+            elevation={2}
+            onPress={() => {
+              navigation.navigate("app");
+            }}
+          >
+            Continue as guest
+          </Button>
+          <Button
+            mode="contained"
+            elevation={2}
+            onPress={() => {
+              setShowSnackbar(true);
+            }}
+          >
+            Login
+          </Button>
+        </View>
       </View>
+      <Snackbar
+        visible={showSnackbar}
+        onDismiss={() => setShowSnackbar(false)}
+        action={{
+          label: "Ok",
+          onPress: () => {
+            setShowSnackbar(false);
+          },
+        }}
+        style={{ width: useBreakPoint(null, "50%", "40%") }}
+      >
+        TODO!!
+      </Snackbar>
     </View>
   );
 };

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { useDatabaseStore } from "../Stores/databaseStore";
 import { useEffect, useState } from "react";
 import { getTaskDetails } from "../DL/TasksDL";
@@ -32,18 +32,17 @@ const SubTaskScreen = ({ navigation, route }) => {
   },[])
 
   return (
-    <View style={style.tdContainer}>
+    <ScrollView style={style.tdContainer} contentContainerStyle={{padding:10,
+    alignItems:"center"}}>
       {t && <TaskDetails task={t} taskId={taskId} />}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = (props) => StyleSheet.create({
   tdContainer:{
       flex:1,
-      padding:10,
       backgroundColor:props.colors.background,
-      alignItems:"center"
   }
 })
 

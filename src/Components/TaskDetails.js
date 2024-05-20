@@ -1,6 +1,6 @@
 import { withObservables } from "@nozbe/watermelondb/react";
-import { ScrollView, StyleSheet, View } from "react-native";
-import { Button, Text, TextInput } from "react-native-paper";
+import { Keyboard, ScrollView, StyleSheet, View } from "react-native";
+import { Button, Chip, Divider, Text, TextInput } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 import { useBreakPoint } from "../utils/breakpoint";
 import SubTaskTask from "../Observables/SubTaskTask";
@@ -12,8 +12,9 @@ const TaskDetails = ({ task, subTasks }) => {
   const [subTaskTitle, setTitle] = useState("");
   const [taskDesc, setDesc] = useState(task.description);
   const [descIcon, setDescIcon] = useState("");
+  const [reminder, setReminder] = useState(false);
 
-  const taskDescription = task.description
+  const taskDescription = task.description;
 
   const UpdateDescription = async () => {
     await UpdateTaskDescription({ task: task, description: taskDesc });
@@ -24,6 +25,7 @@ const TaskDetails = ({ task, subTasks }) => {
   const style = styles(theme);
 
   const addSubTask = () => {
+    Keyboard.dismiss();
     if (subTaskTitle !== "") {
       AddSubTask({ title: subTaskTitle, taskId: task.id })
         .then((newSubTask) => {
@@ -50,12 +52,10 @@ const TaskDetails = ({ task, subTasks }) => {
   }, [taskDesc]);
 
   return (
-    <ScrollView
-      style={{ width: useBreakPoint("100%", "75%", "50%") }}
-      contentContainerStyle={{ flex: 1, gap: 10 }}
+    <View
+      style={{ width: useBreakPoint("100%", "75%", "50%"), flex: 1, gap: 10  }}
     >
       <Text style={style.text}>{task.title}</Text>
-      <Text style={{ color: theme.colors.secondary }}>Add sub tasks</Text>
       <TextInput
         value={subTaskTitle}
         right={
@@ -64,7 +64,7 @@ const TaskDetails = ({ task, subTasks }) => {
           )
         }
         placeholder="Type a subtask..."
-        label="Sub task"
+        label="Add a sub task"
         mode="outlined"
         style={{ backgroundColor: theme.colors.background }}
         onChangeText={setTitle}
@@ -76,6 +76,16 @@ const TaskDetails = ({ task, subTasks }) => {
             return <SubTaskTask key={item.id} SubTask={item} />;
           })}
       </View>
+      <Divider />
+      <Chip
+        selected={reminder}
+        showSelectedOverlay={reminder}
+        onPress={() => setReminder(!reminder)}
+        textStyle={{ padding: 5 }}
+        icon={reminder ? "calendar-check" : "calendar-clock"}
+      >
+        Reminder
+      </Chip>
       <TextInput
         label="Description"
         multiline
@@ -85,7 +95,7 @@ const TaskDetails = ({ task, subTasks }) => {
         right={<TextInput.Icon icon={descIcon} />}
         style={{ backgroundColor: theme.colors.secondaryContainer }}
       />
-    </ScrollView>
+    </View>
   );
 };
 
