@@ -2,53 +2,55 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import Index from "./Screens/Index";
 import NavigationDrawer from "./Components/NavigationDrawer";
-import {
-  DefaultTheme,
-  Provider as PaperProvider,
-} from "react-native-paper";
 import { useBreakPoint } from "./utils/breakpoint";
 import Home from "./Screens/Home";
 import CategoryScreen from "./Screens/CategoryScreen";
 import { useCategoryStore } from "./Stores/categoryStore";
 import CategoryHeaderOptions from "./Components/CategoryHeaderOptions";
 import SubTaskScreen from "./Screens/SubTaskScreen";
+import { useTheme } from "react-native-paper";
+import TaskDetailsHeader from "./Components/TaskDetailsHeader";
+import DrawerHeader from "./Components/DrawerHeader";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 export default function Navigation() {
+  const theme = useTheme();
   return (
-    <PaperProvider theme={DefaultTheme}>
-      <Stack.Navigator
-        screenOptions={{
-          animationEnabled: true,
+    <Stack.Navigator
+      screenOptions={{
+        animationEnabled: true,
+      }}
+    >
+      <Stack.Screen
+        name="login"
+        options={{
+          headerShown: false,
         }}
-      >
-        <Stack.Screen
-          name="login"
-          options={{
-            headerShown: false,
-          }}
-          component={Index}
-        />
-        <Stack.Screen
-          name="app"
-          component={MainDrawer}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          options={{
-            presentation: "modal",
-            headerTitle: "Task details",
-            headerStyle: { borderBottomWidth: 0 },
-          }}
-          name="subtask"
-          component={SubTaskScreen}
-        />
-      </Stack.Navigator>
-    </PaperProvider>
+        component={Index}
+      />
+      <Stack.Screen
+        name="app"
+        component={MainDrawer}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        options={({ navigation }) => ({
+          presentation: "modal",
+          headerTitle: "Task details",
+          headerStyle: {
+            borderBottomWidth: 0,
+            backgroundColor: theme.colors.background,
+          },
+          header: () => <TaskDetailsHeader navigation={navigation} />,
+        })}
+        name="subtask"
+        component={SubTaskScreen}
+      />
+    </Stack.Navigator>
   );
 }
 
@@ -56,9 +58,10 @@ function MainDrawer() {
   const category = useCategoryStore((state) => state.category);
   return (
     <Drawer.Navigator
-      screenOptions={{
+      screenOptions={({navigation,route}) => ({
         drawerType: useBreakPoint("front", "front", "permanent"),
-      }}
+        header: () => <DrawerHeader navigation={navigation} route={route} />,
+      })}
       drawerContent={(props) => <NavigationDrawer {...props} />}
     >
       <Drawer.Screen name="Home" component={Home} />
@@ -70,7 +73,7 @@ function MainDrawer() {
             borderBottomWidth: 0,
           },
           headerTitle: category ? category.title : "Category",
-          headerRight: () => <CategoryHeaderOptions navigation={navigation} />,
+          headerRight: () => <CategoryHeaderOptions />,
         })}
         component={CategoryScreen}
       />

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Platform, ScrollView, StyleSheet, View } from "react-native";
-import { Text, FAB } from "react-native-paper";
+import { Text, FAB, useTheme } from "react-native-paper";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -49,6 +49,8 @@ const Home = () => {
 
   const [menuHeight, setMenuHeight] = useState(0);
   const [menuWidth, setMenuWidth] = useState(0);
+  const theme = useTheme();
+  const style = styles(theme);
 
   return (
     <View style={style.HomeContainer}>
@@ -133,16 +135,18 @@ const Home = () => {
   );
 };
 
-const style = StyleSheet.create({
-  HomeContainer: {
-    flex: 1,
-  },
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
-  },
-});
+const styles = (props) =>
+  StyleSheet.create({
+    HomeContainer: {
+      flex: 1,
+      backgroundColor: props.colors.background,
+    },
+    fab: {
+      position: "absolute",
+      margin: 16,
+      right: 0,
+      bottom: 0,
+    },
+  });
 
 export default Home;

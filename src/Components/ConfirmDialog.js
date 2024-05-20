@@ -1,6 +1,5 @@
-import { View, Text } from "react-native";
 import React, { forwardRef, useImperativeHandle, useState } from "react";
-import { Button, Dialog, Portal } from "react-native-paper";
+import { Button, Dialog, Portal, Text } from "react-native-paper";
 import { useBreakPoint } from "../utils/breakpoint";
 
 const ConfirmDialog = forwardRef(

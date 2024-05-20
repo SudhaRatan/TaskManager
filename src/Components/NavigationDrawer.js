@@ -6,6 +6,7 @@ import {
   Text,
   Button,
   List,
+  useTheme,
 } from "react-native-paper";
 import { EnhancedCategories } from "../Observables/EnhancedCategories";
 import { useCategoryStore } from "../Stores/categoryStore";
@@ -15,10 +16,11 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
   const setStoreCategory = useCategoryStore((state) => state.setCategory);
 
   const isSelected = (index) => index === state.index;
+  const theme = useTheme()
 
   return (
     <>
-      <DrawerContentScrollView>
+      <DrawerContentScrollView style={{backgroundColor:theme.colors.background}}>
         <Text
           variant="headlineSmall"
           style={{ textAlign: "center", padding: 10 }}
@@ -51,7 +53,7 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
           />
         </List.Accordion>
       </DrawerContentScrollView>
-      <View>
+      <View style={{backgroundColor:theme.colors.background}}>
         <Button mode="text" onPress={() => navigation.navigate("login")}>
           Logout
         </Button>

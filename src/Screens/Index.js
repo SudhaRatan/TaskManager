@@ -1,11 +1,19 @@
 import { StyleSheet, View } from "react-native";
 import { useState } from "react";
-import { Button, TextInput, Text, Snackbar } from "react-native-paper";
+import {
+  Button,
+  TextInput,
+  Text,
+  Snackbar,
+  useTheme,
+} from "react-native-paper";
 import { useBreakPoint } from "../utils/breakpoint";
 
 const Index = ({ navigation }) => {
   const [text, setText] = useState("");
   const [showSnackbar, setShowSnackbar] = useState(false);
+  const theme = useTheme();
+  const styles = style(theme);
 
   return (
     <View style={styles.mainContainer}>
@@ -67,13 +75,19 @@ const Index = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  mainContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
-  loginContainer: {
-    gap: 10,
-    alignItems: "flex-start",
-    padding: 20,
-  },
-});
+const style = (props) =>
+  StyleSheet.create({
+    mainContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: props.colors.background,
+    },
+    loginContainer: {
+      gap: 10,
+      alignItems: "flex-start",
+      padding: 20,
+    },
+  });
 
 export default Index;

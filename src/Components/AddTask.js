@@ -4,13 +4,12 @@ import {
   Portal,
   Text,
   TextInput,
-  DefaultTheme,
   Menu,
+  useTheme,
 } from "react-native-paper";
 import { useBreakPoint } from "../utils/breakpoint";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { View } from "react-native";
-import { getCategories } from "../DL/CategoriesDL";
 import { EnhancedCategoriesDropdown } from "../Observables/EnhancedCategories";
 import { useCategoryStore } from "../Stores/categoryStore";
 import { addTask } from "../DL/TasksDL";
@@ -28,11 +27,13 @@ const AddTask = ({ visible, hideDialog, categoryTasks }) => {
     if (title !== "" && category !== null) {
       addTask({ title, categoryId: category.id }).then((newTask) => {
         hideDialog();
-        setCategoryTasks([...categoryTasks, newTask]);
+        if (categoryTasks) setCategoryTasks([...categoryTasks, newTask]);
         setTitle("");
       });
     }
   };
+
+  const theme = useTheme();
 
   const openMenu = () => setVisible1(true);
   const closeMenu = () => setVisible1(false);
@@ -55,7 +56,7 @@ const AddTask = ({ visible, hideDialog, categoryTasks }) => {
               onPress={openMenu}
               style={{
                 padding: 20,
-                backgroundColor: DefaultTheme.colors.surfaceVariant,
+                backgroundColor: theme.colors.secondaryContainer,
               }}
               onLayout={({
                 nativeEvent: {
