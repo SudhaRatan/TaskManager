@@ -5,13 +5,11 @@ import Navigation from "./src/Navigation";
 import { useDatabaseStore } from "./src/Stores/databaseStore";
 import { enGB, registerTranslation } from "react-native-paper-dates";
 registerTranslation("en-GB", enGB);
-import { Provider as PaperProvider, useTheme } from "react-native-paper";
-import { View } from "react-native";
+import { Provider as PaperProvider } from "react-native-paper";
 
 const database = useDatabaseStore.getState().database;
 
 export default function App() {
-  const theme = useTheme();
   return (
     <PaperProvider>
       <NavigationContainer linking={true}>

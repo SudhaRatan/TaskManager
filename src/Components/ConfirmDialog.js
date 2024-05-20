@@ -34,6 +34,7 @@ const ConfirmDialog = forwardRef(
           style={{
             width: useBreakPoint("90%", "70%", "45%"),
             alignSelf: "center",
+            maxWidth:400
           }}
         >
           {iconName && <Dialog.Icon size={30} icon={iconName} />}
