@@ -45,7 +45,7 @@ const TaskDetails = ({ task, subTasks }) => {
       unsub = setTimeout(async () => {
         await UpdateDescription();
         setDescIcon("check");
-      }, 2000);
+      }, 1000);
     }
 
     return () => clearTimeout(unsub);
@@ -77,7 +77,7 @@ const TaskDetails = ({ task, subTasks }) => {
           })}
       </View>
       <Divider />
-      <Chip
+      {/* <Chip
         selected={reminder}
         showSelectedOverlay={reminder}
         onPress={() => setReminder(!reminder)}
@@ -85,7 +85,7 @@ const TaskDetails = ({ task, subTasks }) => {
         icon={reminder ? "calendar-check" : "calendar-clock"}
       >
         Reminder
-      </Chip>
+      </Chip> */}
       <TextInput
         label="Description"
         multiline

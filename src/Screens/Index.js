@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Platform } from "react-native";
 import { useState } from "react";
 import {
   Button,
@@ -8,8 +8,23 @@ import {
   useTheme,
 } from "react-native-paper";
 import { useBreakPoint } from "../utils/breakpoint";
+import * as Notifications from "expo-notifications";
 
 const Index = ({ navigation }) => {
+  async function schedulePushNotification() {
+    if (Platform.OS !== "web") {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "You've got notification! 🔔",
+          body: "Here is the notification body",
+        },
+        trigger: { seconds: 2 },
+      });
+    } else {
+      new Notification("Notification")
+    }
+  }
+
   const [text, setText] = useState("");
   const [showSnackbar, setShowSnackbar] = useState(false);
   const theme = useTheme();
