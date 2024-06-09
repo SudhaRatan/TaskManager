@@ -1,5 +1,5 @@
 import { StyleSheet, View, Platform } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   TextInput,
@@ -9,6 +9,8 @@ import {
 } from "react-native-paper";
 import { useBreakPoint } from "../utils/breakpoint";
 import * as Notifications from "expo-notifications";
+import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import {useAuthStore} from "../Stores/authStore"
 
 const Index = ({ navigation }) => {
   async function schedulePushNotification() {
@@ -30,9 +32,23 @@ const Index = ({ navigation }) => {
   const theme = useTheme();
   const styles = style(theme);
 
+  const auth = getAuth();
+  const user = useAuthStore((state) => state.user)
+  const setUser = useAuthStore((state) => state.setUser)
+
   const handleLogin = () => {
-    navigation.navigate("app");
+    signInWithPopup(auth, new GoogleAuthProvider());
+    
   };
+
+  useEffect(() => {
+    auth.onAuthStateChanged(async (user) => {
+      setUser(user);
+      if (user) {
+        navigation.navigate("app")
+      }
+    });
+  }, []);
 
   return (
     <View style={styles.mainContainer}>

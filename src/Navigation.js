@@ -11,33 +11,6 @@ import SubTaskScreen from "./Screens/SubTaskScreen";
 import { useTheme } from "react-native-paper";
 import TaskDetailsHeader from "./Components/TaskDetailsHeader";
 import DrawerHeader from "./Components/DrawerHeader";
-import { initializeApp } from "firebase/app";
-import { GoogleAuthProvider, getAuth } from "firebase/auth";
-import {
-  CACHE_SIZE_UNLIMITED,
-  initializeFirestore,
-  persistentLocalCache,
-} from "firebase/firestore";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyB5e9fack2km1Nx1zUN2BgQWhECJhdrHoY",
-  authDomain: "taskmanager-2a678.firebaseapp.com",
-  projectId: "taskmanager-2a678",
-  storageBucket: "taskmanager-2a678.appspot.com",
-  messagingSenderId: "570152310936",
-  appId: "1:570152310936:web:2917ba1233a6e7afa858ed",
-  measurementId: "G-KNS61B863G",
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
-const provider = new GoogleAuthProvider();
-const auth = getAuth();
-
-export const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({ cacheSizeBytes: CACHE_SIZE_UNLIMITED }),
-});
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
