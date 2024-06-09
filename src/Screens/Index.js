@@ -21,7 +21,7 @@ const Index = ({ navigation }) => {
         trigger: { seconds: 2 },
       });
     } else {
-      new Notification("Notification")
+      new Notification("Notification");
     }
   }
 
@@ -29,6 +29,10 @@ const Index = ({ navigation }) => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const theme = useTheme();
   const styles = style(theme);
+
+  const handleLogin = () => {
+    navigation.navigate("app");
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -53,14 +57,8 @@ const Index = ({ navigation }) => {
             width: "100%",
           }}
         >
-          <Button
-            mode="text"
-            elevation={2}
-            onPress={() => {
-              navigation.navigate("app");
-            }}
-          >
-            Continue as guest
+          <Button mode="text" elevation={2} onPress={handleLogin}>
+            Login with google
           </Button>
           <Button
             mode="contained"
