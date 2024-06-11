@@ -9,7 +9,9 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import { db } from "../App";
+import { useDatabaseStore } from "../Stores/databaseStore";
+
+const db = useDatabaseStore.getState().database;
 
 // Ai functions
 

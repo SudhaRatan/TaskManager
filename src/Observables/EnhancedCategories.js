@@ -11,7 +11,7 @@ import CategoryDrawerItem from "../Components/CategoryDrawerItem";
 
 const database = useDatabaseStore.getState().database;
 
-function Categories({ categories, navigation, state }) {
+export function Categories({ categories, navigation, state }) {
   const [selIndex, setSelIndex] = useState(0);
   const setCategory = useCategoryStore((state) => state.setCategory);
   const isActive = (index) => {
@@ -56,7 +56,7 @@ function Categories({ categories, navigation, state }) {
   );
 }
 
-function CategoriesDropdown({ categories, closeMenu }) {
+export function CategoriesDropdown({ categories, closeMenu }) {
   const setCategory = useCategoryStore((state) => state.setCategory);
 
   const setCategoryTasks = useTaskStore((state) => state.setCategoryTasks);
@@ -88,12 +88,10 @@ function CategoriesDropdown({ categories, closeMenu }) {
   );
 }
 
-const enhance = withObservables([""], () => ({
-  categories: database.collections.get("categories").query().observe(),
-}));
+// const enhance = withObservables([""], () => ({
+//   categories: database.collections.get("categories").query().observe(),
+// }));
 
-export const EnhancedCategories = enhance(Categories);
-export const EnhancedCategoriesDropdown = enhance(CategoriesDropdown);
 
 const style = StyleSheet.create({
   menuItem: { minWidth: "100%" },

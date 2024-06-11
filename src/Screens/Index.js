@@ -10,7 +10,7 @@ import {
 import { useBreakPoint } from "../utils/breakpoint";
 import * as Notifications from "expo-notifications";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
-import {useAuthStore} from "../Stores/authStore"
+import { useAuthStore } from "../Stores/authStore";
 
 const Index = ({ navigation }) => {
   async function schedulePushNotification() {
@@ -33,19 +33,18 @@ const Index = ({ navigation }) => {
   const styles = style(theme);
 
   const auth = getAuth();
-  const user = useAuthStore((state) => state.user)
-  const setUser = useAuthStore((state) => state.setUser)
+  const user = useAuthStore((state) => state.user);
+  const setUser = useAuthStore((state) => state.setUser);
 
   const handleLogin = () => {
     signInWithPopup(auth, new GoogleAuthProvider());
-    
   };
 
   useEffect(() => {
     auth.onAuthStateChanged(async (user) => {
-      setUser(user);
       if (user) {
-        navigation.navigate("app")
+        setUser(user);
+        navigation.navigate("app");
       }
     });
   }, []);

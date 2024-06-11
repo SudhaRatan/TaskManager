@@ -10,7 +10,7 @@ import {
 import { useBreakPoint } from "../utils/breakpoint";
 import { useState } from "react";
 import { View } from "react-native";
-import { EnhancedCategoriesDropdown } from "../Observables/EnhancedCategories";
+import { CategoriesDropdown } from "../Observables/EnhancedCategories";
 import { useCategoryStore } from "../Stores/categoryStore";
 import { addTask } from "../DL/TasksDL";
 import { useTaskStore } from "../Stores/taskStore";
@@ -75,7 +75,7 @@ const AddTask = ({ visible, hideDialog, categoryTasks }) => {
             onDismiss={closeMenu}
             anchor={<View style={{ height: 10 }} />}
           >
-            <EnhancedCategoriesDropdown closeMenu={closeMenu} />
+            <CategoriesDropdown closeMenu={closeMenu} />
           </Menu>
 
           <TextInput

@@ -1,26 +1,30 @@
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import {
-  Drawer,
-  Text,
-  Button,
-  List,
-  useTheme,
-} from "react-native-paper";
-import { EnhancedCategories } from "../Observables/EnhancedCategories";
+import { Drawer, Text, Button, List, useTheme } from "react-native-paper";
+import { Categories } from "../Observables/EnhancedCategories";
 import { useCategoryStore } from "../Stores/categoryStore";
+import { getCategories } from "../DL/firebaseFunctions";
+import { useAuthStore } from "../Stores/authStore";
 const NavigationDrawer = ({ state, navigation, descriptors }) => {
   const [catAcc, setCatAcc] = useState(true);
 
-  const setStoreCategory = useCategoryStore((state) => state.setCategory);
+  const setCategory = useCategoryStore((state) => state.setCategory);
+  const [categories, setCategories] = useState([]);
+  const user = useAuthStore((state) => state.user);
 
   const isSelected = (index) => index === state.index;
-  const theme = useTheme()
+  const theme = useTheme();
+
+  useEffect(() => {
+    getCategories({ setCategories, user });
+  }, []);
 
   return (
     <>
-      <DrawerContentScrollView style={{backgroundColor:theme.colors.background}}>
+      <DrawerContentScrollView
+        style={{ backgroundColor: theme.colors.background }}
+      >
         <Text
           variant="headlineSmall"
           style={{ textAlign: "center", padding: 10 }}
@@ -35,7 +39,7 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
                 label={item.name}
                 active={isSelected(index)}
                 onPress={() => {
-                  setStoreCategory(null);
+                  setCategory(null);
                   navigation.navigate(item.name);
                 }}
               />
@@ -47,13 +51,14 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
           title="Categories"
           left={(props) => <List.Icon {...props} icon="folder" />}
         >
-          <EnhancedCategories
+          <Categories
             navigation={navigation}
             state={state}
+            categories={categories}
           />
         </List.Accordion>
       </DrawerContentScrollView>
-      <View style={{backgroundColor:theme.colors.background}}>
+      <View style={{ backgroundColor: theme.colors.background }}>
         <Button mode="text" onPress={() => navigation.navigate("login")}>
           Logout
         </Button>

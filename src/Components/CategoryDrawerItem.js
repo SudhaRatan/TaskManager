@@ -12,16 +12,16 @@ const CategoryDrawerItem = ({
   getTasks,
   setSelIndex,
   setCategory,
-  countTasks
+  // countTasks
 }) => {
   const theme = useTheme();
   return (
     <Drawer.Item
       key={index}
       label={category.title}
-      right={() => (
-        <Text style={{ color: theme.colors.secondary }}>{countTasks !== 0 && countTasks}</Text>
-      )}
+      // right={() => (
+      //   <Text style={{ color: theme.colors.secondary }}>{countTasks !== 0 && countTasks}</Text>
+      // )}
       active={isActive(index)}
       onPress={() => {
         navigation.navigate("Category");
@@ -35,9 +35,4 @@ const CategoryDrawerItem = ({
   );
 };
 
-const enhance = withObservables(['category'],({category}) => ({
-    countTasks:category.tasks.observeCount(),
-    category
-}))
-
-export default enhance(CategoryDrawerItem);
+export default CategoryDrawerItem;
