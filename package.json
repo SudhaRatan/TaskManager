@@ -7,7 +7,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "build:web": "expo export -p web && npx workbox-cli generateSW workbox-config.js && cd dist && mkdir public && cp sw.js public/sw.js"
+    "build:web": "expo export -p web"
   },
   "dependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",

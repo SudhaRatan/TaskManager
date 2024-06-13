@@ -14,21 +14,16 @@ import { useAuthStore } from "../Stores/authStore";
 import { useDatabaseStore } from "../Stores/databaseStore";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
-
 import { signInWithCredential } from "firebase/auth";
 
-if (Platform.OS !== "web") {
-  WebBrowser.maybeCompleteAuthSession();
-}
+WebBrowser.maybeCompleteAuthSession();
 
 const Index = () => {
-  const [request, response, promptAsync] =
-    Platform.OS !== "web"
-      ? Google.useAuthRequest({
-          androidClientId:
-            "924751066543-7u9jsh1k00b64eu4abqvo2jlicp0imbk.apps.googleusercontent.com",
-        })
-      : [null, null, null];
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId:
+      "924751066543-7u9jsh1k00b64eu4abqvo2jlicp0imbk.apps.googleusercontent.com",
+      webClientId:"570152310936-otrp4lh7n5cn375jgusgmpogtkjhgtkr.apps.googleusercontent.com"
+  });
   const [text, setText] = useState("");
   const [showSnackbar, setShowSnackbar] = useState(false);
   const theme = useTheme();
@@ -38,7 +33,7 @@ const Index = () => {
   const setUser = useAuthStore((state) => state.setUser);
 
   const handleLogin = () => {
-    if (Platform.OS === "web") {
+    if (!true) {
       signInWithPopup(auth, new GoogleAuthProvider());
     } else {
       promptAsync();
@@ -46,12 +41,11 @@ const Index = () => {
   };
 
   useEffect(() => {
-    if (Platform.OS !== "web") {
-      if (response?.type === "success") {
-        const { id_token } = response.params;
-        const credential = GoogleAuthProvider.credential(id_token);
-        signInWithCredential(auth, credential);
-      }
+    if (response?.type === "success") {
+      const { id_token } = response.params;
+      const credential = GoogleAuthProvider.credential(id_token);
+      signInWithCredential(auth, credential);
+
     }
   }, [response]);
 
