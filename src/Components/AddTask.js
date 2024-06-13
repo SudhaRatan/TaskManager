@@ -12,24 +12,24 @@ import { useState } from "react";
 import { View } from "react-native";
 import { CategoriesDropdown } from "../Observables/EnhancedCategories";
 import { useCategoryStore } from "../Stores/categoryStore";
-import { addTask } from "../DL/TasksDL";
-import { useTaskStore } from "../Stores/taskStore";
+import { createTask } from "../DL/firebaseFunctions";
 
-const AddTask = ({ visible, hideDialog, categoryTasks }) => {
+const AddTask = ({ visible, hideDialog, user }) => {
   const [title, setTitle] = useState("");
   const [visible1, setVisible1] = useState(false);
   const [menuWidth, setMenuWidth] = useState(0);
   const category = useCategoryStore((state) => state.category);
-
-  const setCategoryTasks = useTaskStore((state) => state.setCategoryTasks);
+  const categories = useCategoryStore((state) => state.categories);
 
   const Add = async () => {
     if (title !== "" && category !== null) {
-      addTask({ title, categoryId: category.id }).then((newTask) => {
-        hideDialog();
-        if (categoryTasks) setCategoryTasks([...categoryTasks, newTask]);
-        setTitle("");
+      createTask({
+        taskTitle: title,
+        selectedCategory: category.id,
+        uid: user.uid,
       });
+      hideDialog();
+      setTitle("");
     }
   };
 
@@ -75,7 +75,11 @@ const AddTask = ({ visible, hideDialog, categoryTasks }) => {
             onDismiss={closeMenu}
             anchor={<View style={{ height: 10 }} />}
           >
-            <CategoriesDropdown closeMenu={closeMenu} />
+            <CategoriesDropdown
+              user={user}
+              categories={categories}
+              closeMenu={closeMenu}
+            />
           </Menu>
 
           <TextInput

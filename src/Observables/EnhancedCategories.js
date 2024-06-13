@@ -1,17 +1,15 @@
-import { withObservables } from "@nozbe/watermelondb/react";
-import { useDatabaseStore } from "../Stores/databaseStore";
 import { Menu } from "react-native-paper";
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { useCategoryStore } from "../Stores/categoryStore";
 import { useTaskStore } from "../Stores/taskStore";
-import { getTasksForCategory } from "../DL/TasksDL";
 import { runOnJS } from "react-native-reanimated";
 import CategoryDrawerItem from "../Components/CategoryDrawerItem";
+import {
+  getTasks as getCategoryTasks,
+} from "../DL/firebaseFunctions";
 
-const database = useDatabaseStore.getState().database;
-
-export function Categories({ categories, navigation, state }) {
+export function Categories({ categories, navigation, state, user }) {
   const [selIndex, setSelIndex] = useState(0);
   const setCategory = useCategoryStore((state) => state.setCategory);
   const isActive = (index) => {
@@ -25,14 +23,19 @@ export function Categories({ categories, navigation, state }) {
 
   const getTasks = async (catId) => {
     setCategoryTasks([]);
-    const tasks = await getTasksForCategory(catId);
-    setCategoryTasks(tasks);
+    getCategoryTasks({
+      categoryId: catId,
+      setTasks: setCategoryTasks,
+      uid: user.uid,
+    });
   };
 
   useEffect(() => {
     if (categories.length > 0) {
       getTasks(categories[0].id);
-      setCategory(categories[0])
+      setCategory(categories[0]);
+    } else {
+      navigation.navigate("Home");
     }
   }, []);
 
@@ -56,15 +59,18 @@ export function Categories({ categories, navigation, state }) {
   );
 }
 
-export function CategoriesDropdown({ categories, closeMenu }) {
+export function CategoriesDropdown({ categories, closeMenu, user }) {
   const setCategory = useCategoryStore((state) => state.setCategory);
 
   const setCategoryTasks = useTaskStore((state) => state.setCategoryTasks);
 
   const getTasks = async (catId) => {
     setCategoryTasks([]);
-    const tasks = await getTasksForCategory(catId);
-    setCategoryTasks(tasks);
+    getCategoryTasks({
+      categoryId: catId,
+      setTasks: setCategoryTasks,
+      uid: user.uid,
+    });
   };
   return (
     <ScrollView style={{ maxHeight: 300 }}>
@@ -87,11 +93,6 @@ export function CategoriesDropdown({ categories, closeMenu }) {
     </ScrollView>
   );
 }
-
-// const enhance = withObservables([""], () => ({
-//   categories: database.collections.get("categories").query().observe(),
-// }));
-
 
 const style = StyleSheet.create({
   menuItem: { minWidth: "100%" },

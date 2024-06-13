@@ -10,6 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 import AddCategory from "../Components/AddCategory";
 import AddTask from "../Components/AddTask";
+import { useAuthStore } from "../Stores/authStore";
 
 const Home = () => {
   const [visible, setVisible] = useState(false);
@@ -18,6 +19,7 @@ const Home = () => {
   const [fabState, setFabState] = useState({ open: false });
 
   const onStateChange = ({ open }) => setFabState({ open });
+  const user = useAuthStore((state) => state.user);
 
   const { open } = fabState;
 
@@ -129,8 +131,8 @@ const Home = () => {
           ]}
         />
       )}
-      <AddCategory visible={visible} hideDialog={hideDialog} />
-      <AddTask visible={addTaskVisible} hideDialog={hideTaskDialog} />
+      <AddCategory user={user} visible={visible} hideDialog={hideDialog} />
+      <AddTask user={user} visible={addTaskVisible} hideDialog={hideTaskDialog} />
     </View>
   );
 };

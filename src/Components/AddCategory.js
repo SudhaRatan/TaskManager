@@ -1,11 +1,17 @@
 import { Button, Dialog, Portal, TextInput } from "react-native-paper";
 import { useBreakPoint } from "../utils/breakpoint";
 import { useState } from "react";
-import { addCategory, updateCategory } from "../DL/CategoriesDL";
 import { useCategoryStore } from "../Stores/categoryStore";
-import { runOnJS } from "react-native-reanimated";
+import { createCategory, updateCategory } from "../DL/firebaseFunctions";
 
-const AddCategory = ({ visible, hideDialog, update, closeMenu, category }) => {
+const AddCategory = ({
+  visible,
+  hideDialog,
+  update,
+  closeMenu,
+  category,
+  user,
+}) => {
   const [title, setTitle] = useState(update ? category.title : "");
 
   const setCategory = useCategoryStore((state) => state.setCategory);
@@ -13,18 +19,20 @@ const AddCategory = ({ visible, hideDialog, update, closeMenu, category }) => {
   const Add = async () => {
     if (title !== "") {
       if (update) {
-        setCategory({ title: "Updating title..." });
-        updateCategory(category, title).then((updatedCategory) => {
-          setCategory(updatedCategory);
-          hideDialog();
-          setTitle("");
-          closeMenu && closeMenu();
+        setCategory({ ...category, title: "Updating title..." });
+        await updateCategory({
+          categoryId: category.id,
+          title: title,
+          userId: user.uid,
         });
+        setCategory({ ...category, title: title });
+        hideDialog();
+        setTitle("");
+        closeMenu && closeMenu();
       } else {
-        addCategory(title).then((newCategory) => {
-          hideDialog();
-          setTitle("");
-        });
+        createCategory({ categoryTitle: title, userId: user.uid });
+        hideDialog();
+        setTitle("");
       }
     }
   };
@@ -56,7 +64,7 @@ const AddCategory = ({ visible, hideDialog, update, closeMenu, category }) => {
           >
             Cancel
           </Button>
-          <Button onPress={Add}>{update ? "Update": "Add"}</Button>
+          <Button onPress={Add}>{update ? "Update" : "Add"}</Button>
         </Dialog.Actions>
       </Dialog>
     </Portal>

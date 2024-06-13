@@ -11,45 +11,53 @@ import SubTaskScreen from "./Screens/SubTaskScreen";
 import { useTheme } from "react-native-paper";
 import TaskDetailsHeader from "./Components/TaskDetailsHeader";
 import DrawerHeader from "./Components/DrawerHeader";
+import { useAuthStore } from "./Stores/authStore";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 export default function Navigation() {
   const theme = useTheme();
+  const user = useAuthStore((state) => state.user);
+
   return (
     <Stack.Navigator
       screenOptions={{
         animationEnabled: true,
       }}
     >
-      <Stack.Screen
-        name="login"
-        options={{
-          headerShown: false,
-        }}
-        component={Index}
-      />
-      <Stack.Screen
-        name="app"
-        component={MainDrawer}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        options={({ navigation }) => ({
-          presentation: "modal",
-          headerTitle: "Task details",
-          headerStyle: {
-            borderBottomWidth: 0,
-            backgroundColor: theme.colors.background,
-          },
-          header: () => <TaskDetailsHeader navigation={navigation} />,
-        })}
-        name="subtask"
-        component={SubTaskScreen}
-      />
+      {!user ? (
+        <Stack.Screen
+          name="login"
+          options={{
+            headerShown: false,
+          }}
+          component={Index}
+        />
+      ) : (
+        <>
+          <Stack.Screen
+            name="app"
+            component={MainDrawer}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            options={({ navigation }) => ({
+              presentation: "modal",
+              headerTitle: "Task details",
+              headerStyle: {
+                borderBottomWidth: 0,
+                backgroundColor: theme.colors.background,
+              },
+              header: () => <TaskDetailsHeader navigation={navigation} />,
+            })}
+            name="subtask"
+            component={SubTaskScreen}
+          />
+        </>
+      )}
     </Stack.Navigator>
   );
 }
@@ -58,7 +66,7 @@ function MainDrawer() {
   const category = useCategoryStore((state) => state.category);
   return (
     <Drawer.Navigator
-      screenOptions={({navigation,route}) => ({
+      screenOptions={({ navigation, route }) => ({
         drawerType: useBreakPoint("front", "front", "permanent"),
         header: () => <DrawerHeader navigation={navigation} route={route} />,
       })}

@@ -6,12 +6,17 @@ import { Categories } from "../Observables/EnhancedCategories";
 import { useCategoryStore } from "../Stores/categoryStore";
 import { getCategories } from "../DL/firebaseFunctions";
 import { useAuthStore } from "../Stores/authStore";
+import { signOut } from "firebase/auth";
+import { useDatabaseStore } from "../Stores/databaseStore";
 const NavigationDrawer = ({ state, navigation, descriptors }) => {
   const [catAcc, setCatAcc] = useState(true);
 
   const setCategory = useCategoryStore((state) => state.setCategory);
-  const [categories, setCategories] = useState([]);
+  const categories = useCategoryStore(state => state.categories)
+  const setCategories = useCategoryStore(state => state.setCategories)
+  const setUser = useAuthStore((state) => state.setUser);
   const user = useAuthStore((state) => state.user);
+  const auth = useDatabaseStore((state) => state.auth);
 
   const isSelected = (index) => index === state.index;
   const theme = useTheme();
@@ -54,12 +59,19 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
           <Categories
             navigation={navigation}
             state={state}
+            user={user}
             categories={categories}
           />
         </List.Accordion>
       </DrawerContentScrollView>
       <View style={{ backgroundColor: theme.colors.background }}>
-        <Button mode="text" onPress={() => navigation.navigate("login")}>
+        <Button
+          mode="text"
+          onPress={() => {
+            signOut(auth);
+            setUser(null);
+          }}
+        >
           Logout
         </Button>
       </View>

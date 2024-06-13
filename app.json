@@ -28,11 +28,9 @@
       "favicon": "./assets/favicon.png",
       "output":"single"
     },
+    "scheme":"task-manager",
     "plugins": [
       "expo-build-properties",
-      [
-        "@morrowdigital/watermelondb-expo-plugin"
-      ],
       [
         "expo-build-properties",
         {

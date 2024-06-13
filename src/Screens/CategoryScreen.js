@@ -1,14 +1,14 @@
 import { View, StyleSheet } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FAB, Menu, Text, useTheme } from "react-native-paper";
 import AddTask from "../Components/AddTask";
 import { useCategoryStore } from "../Stores/categoryStore";
 import ConfirmDialog from "../Components/ConfirmDialog";
-import { deleteTask } from "../DL/TasksDL";
 import CategoryTasks from "../Observables/EnhancedTasks";
 import { useTaskStore } from "../Stores/taskStore";
 import AddCategory from "../Components/AddCategory";
-import { deleteCategory } from "../DL/CategoriesDL";
+import { useAuthStore } from "../Stores/authStore";
+import { deleteCategory, deleteTask } from "../DL/firebaseFunctions";
 
 const CategoryScreen = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
@@ -27,6 +27,7 @@ const CategoryScreen = ({ navigation }) => {
   const category = useCategoryStore((state) => state.category);
   const categoryMenu = useCategoryStore((state) => state.categoryMenu);
   const setCategoryMenu = useCategoryStore((state) => state.setCategoryMenu);
+  const user = useAuthStore((state) => state.user);
 
   const DeleteRef = useRef();
   const DeleteCategoryRef = useRef();
@@ -59,7 +60,7 @@ const CategoryScreen = ({ navigation }) => {
           <Menu.Item
             leadingIcon="pencil"
             onPress={() => {
-              setCategoryMenu(false)
+              setCategoryMenu(false);
               showCategoryDialog();
             }}
             title="Edit"
@@ -79,11 +80,7 @@ const CategoryScreen = ({ navigation }) => {
         />
       </View>
       <FAB icon="plus" style={styles.fab} size="medium" onPress={showDialog} />
-      <AddTask
-        categoryTasks={categoryTasks}
-        hideDialog={hideDialog}
-        visible={visible}
-      />
+      <AddTask user={user} hideDialog={hideDialog} visible={visible} />
       <ConfirmDialog
         ref={DeleteRef}
         text="Are you sure you want to delete this task?"
@@ -91,11 +88,12 @@ const CategoryScreen = ({ navigation }) => {
         iconName="alert"
         action={(task) => {
           DeleteTask(task);
-          deleteTask(task);
+          deleteTask({ taskId: task.id });
         }}
       />
       {categoryDialog && (
         <AddCategory
+          user={user}
           category={category}
           update={true}
           visible={categoryDialog}
@@ -111,8 +109,8 @@ const CategoryScreen = ({ navigation }) => {
         dismissText="No"
         okText="Yes"
         action={async (cat) => {
+          deleteCategory({ categoryId: cat.id });
           navigation.navigate("Home");
-          await deleteCategory(cat);
         }}
       />
     </View>

@@ -1,12 +1,15 @@
-import { withObservables } from "@nozbe/watermelondb/react";
 import { Keyboard, ScrollView, StyleSheet, View } from "react-native";
 import { Button, Chip, Divider, Text, TextInput } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 import { useBreakPoint } from "../utils/breakpoint";
 import SubTaskTask from "../Observables/SubTaskTask";
 import { useEffect, useState } from "react";
-import { AddSubTask } from "../DL/SubTaskDL";
-import { UpdateTaskDescription } from "../DL/TasksDL";
+import {
+  checkSubTask,
+  createSubTask,
+  deleteSubTask,
+  updateTaskdescription,
+} from "../DL/firebaseFunctions";
 
 const TaskDetails = ({ task, subTasks }) => {
   const [subTaskTitle, setTitle] = useState("");
@@ -17,7 +20,10 @@ const TaskDetails = ({ task, subTasks }) => {
   const taskDescription = task.description;
 
   const UpdateDescription = async () => {
-    await UpdateTaskDescription({ task: task, description: taskDesc });
+    updateTaskdescription({
+      selectedTaskId: task.id,
+      taskDescription: taskDesc,
+    });
   };
 
   const theme = useTheme();
@@ -27,13 +33,8 @@ const TaskDetails = ({ task, subTasks }) => {
   const addSubTask = () => {
     Keyboard.dismiss();
     if (subTaskTitle !== "") {
-      AddSubTask({ title: subTaskTitle, taskId: task.id })
-        .then((newSubTask) => {
-          setTitle("");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      createSubTask({ subtaskTitle: subTaskTitle, selectedTaskId: task.id });
+      setTitle("");
     }
   };
 
@@ -51,9 +52,13 @@ const TaskDetails = ({ task, subTasks }) => {
     return () => clearTimeout(unsub);
   }, [taskDesc]);
 
+  useEffect(() => {
+    setDesc(taskDescription);
+  }, [taskDescription]);
+
   return (
     <View
-      style={{ width: useBreakPoint("100%", "75%", "50%"), flex: 1, gap: 10  }}
+      style={{ width: useBreakPoint("100%", "75%", "50%"), flex: 1, gap: 10 }}
     >
       <Text style={style.text}>{task.title}</Text>
       <TextInput
@@ -73,7 +78,18 @@ const TaskDetails = ({ task, subTasks }) => {
       <View style={{ gap: 5 }}>
         {subTasks &&
           subTasks.map((item) => {
-            return <SubTaskTask key={item.id} SubTask={item} />;
+            return (
+              <SubTaskTask
+                checksubTask={(SubTask) => {
+                  checkSubTask({ subtask: SubTask, taskId: task.id });
+                }}
+                deletesubTask={(SubTask) => {
+                  deleteSubTask({ taskId: task.id, subtaskId: SubTask.id });
+                }}
+                key={item.id}
+                SubTask={item}
+              />
+            );
           })}
       </View>
       <Divider />
@@ -99,11 +115,6 @@ const TaskDetails = ({ task, subTasks }) => {
   );
 };
 
-const enhance = withObservables(["task"], ({ task }) => ({
-  task,
-  subTasks: task.subTasks,
-}));
-
 const styles = (props) =>
   StyleSheet.create({
     text: {
@@ -112,4 +123,4 @@ const styles = (props) =>
     },
   });
 
-export default enhance(TaskDetails);
+export default TaskDetails;

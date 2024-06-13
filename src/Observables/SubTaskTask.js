@@ -6,10 +6,8 @@ import {
   Text,
 } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
-import { withObservables } from "@nozbe/watermelondb/react";
-import { checkTask, deleteTask } from "../DL/TasksDL";
 
-const SubTaskTask = ({ SubTask }) => {
+const SubTaskTask = ({ SubTask, checksubTask, deletesubTask }) => {
   const theme = useTheme();
 
   return (
@@ -23,7 +21,7 @@ const SubTaskTask = ({ SubTask }) => {
     >
       <TouchableRipple
         onPress={async () => {
-          checkTask(SubTask);
+          checksubTask(SubTask);
         }}
       >
         <View style={style.surface}>
@@ -50,7 +48,7 @@ const SubTaskTask = ({ SubTask }) => {
           <TouchableRipple
             style={{}}
             onPress={() => {
-              deleteTask(SubTask);
+              deletesubTask(SubTask);
             }}
           >
             <Icon source="delete" color={theme.colors.secondary} size={24} />
@@ -60,10 +58,6 @@ const SubTaskTask = ({ SubTask }) => {
     </Surface>
   );
 };
-
-const enhance = withObservables(["subtask"], ({ SubTask }) => ({
-  SubTask,
-}));
 
 const style = StyleSheet.create({
   container: {
@@ -85,4 +79,4 @@ const style = StyleSheet.create({
   },
 });
 
-export default enhance(SubTaskTask);
+export default SubTaskTask;

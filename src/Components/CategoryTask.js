@@ -9,8 +9,7 @@ import {
   TextInput,
 } from "react-native-paper";
 import { Platform, StyleSheet, View } from "react-native";
-import { changeTaskTitle, checkTask } from "../DL/TasksDL";
-import { withObservables } from "@nozbe/watermelondb/react";
+import { checkTask, upadateTasktitle } from "../DL/firebaseFunctions";
 
 const CategoryTask = ({ task, del, categoryId, navigation }) => {
   const [menuVisible, setMenuvisible] = useState(false);
@@ -25,9 +24,9 @@ const CategoryTask = ({ task, del, categoryId, navigation }) => {
     setCanEdit(true);
   };
 
-  const upadateTaskTitle = async () => {
+  const upadateTaskTitle = () => {
     setCanEdit(false);
-    await changeTaskTitle(task, editText);
+    upadateTasktitle({ taskId: task.id, title: editText });
   };
 
   return (
@@ -41,7 +40,7 @@ const CategoryTask = ({ task, del, categoryId, navigation }) => {
     >
       <TouchableRipple
         onPress={async () => {
-          checkTask(task);
+          checkTask({ task });
         }}
         onLongPress={() => {
           setMenuvisible(true);
@@ -143,7 +142,9 @@ const CategoryTask = ({ task, del, categoryId, navigation }) => {
           {!canEdit && (
             <TouchableRipple
               style={{ padding: 0 }}
-              onPress={() => navigation.navigate("subtask",{taskId:task.id})}
+              onPress={() =>
+                navigation.navigate("subtask", { taskId: task.id })
+              }
             >
               <Icon size={24} source="chevron-right" />
             </TouchableRipple>
@@ -174,8 +175,4 @@ const style = StyleSheet.create({
   },
 });
 
-const enhance = withObservables(["task"], ({ task }) => ({
-  task,
-}));
-
-export default enhance(CategoryTask);
+export default CategoryTask;

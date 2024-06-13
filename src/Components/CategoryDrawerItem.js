@@ -1,8 +1,6 @@
-import { View, Text } from "react-native";
 import React from "react";
 import { Drawer, useTheme } from "react-native-paper";
 import { runOnJS } from "react-native-reanimated";
-import { withObservables } from "@nozbe/watermelondb/react";
 
 const CategoryDrawerItem = ({
   category,
