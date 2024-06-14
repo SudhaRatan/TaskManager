@@ -25,10 +25,9 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="com.sudharatan.taskmanager"/>
         <data android:scheme="exp+taskmanager"/>
-        <data android:scheme="TaskManager"/>
-        <data android:scheme="task-manager"/>
+        <data android:scheme="taskmanager"/>
+        <data android:scheme="com.sudharatan.taskmanager"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>

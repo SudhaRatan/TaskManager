@@ -28,7 +28,7 @@
       "favicon": "./assets/favicon.png",
       "output":"single"
     },
-    "scheme":"task-manager",
+    "scheme":"taskmanager",
     "plugins": [
       "expo-build-properties",
       [

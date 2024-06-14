@@ -1,3 +1,4 @@
+import "expo-firestore-offline-persistence";
 import { create } from "zustand";
 import {
   GoogleAuthProvider,
@@ -6,7 +7,7 @@ import {
   getReactNativePersistence,
 } from "firebase/auth";
 import { initializeApp } from "firebase/app";
-import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   CACHE_SIZE_UNLIMITED,
   initializeFirestore,
@@ -24,15 +25,19 @@ const firebaseConfig = {
   measurementId: "G-KNS61B863G",
 };
 
-// Android 924751066543-7u9jsh1k00b64eu4abqvo2jlicp0imbk.apps.googleusercontent.com
 
 const app = initializeApp(firebaseConfig);
 export const useDatabaseStore = create((set, get) => ({
   provider: new GoogleAuthProvider(),
   database: initializeFirestore(app, {
-    localCache: persistentLocalCache({ cacheSizeBytes: CACHE_SIZE_UNLIMITED }),
+    localCache: persistentLocalCache({
+      cacheSizeBytes: CACHE_SIZE_UNLIMITED,
+    }),
   }),
-  auth: Platform.OS === "web"? getAuth(app) : initializeAuth(app, {
-    persistence: getReactNativePersistence(ReactNativeAsyncStorage),
-  }),
+  auth:
+    Platform.OS === "web"
+      ? getAuth(app)
+      : initializeAuth(app, {
+          persistence: getReactNativePersistence(AsyncStorage),
+        }),
 }));

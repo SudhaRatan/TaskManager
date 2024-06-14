@@ -6,31 +6,22 @@ import {
   Text,
   Snackbar,
   useTheme,
+  Dialog,
+  Portal,
 } from "react-native-paper";
 import { useBreakPoint } from "../utils/breakpoint";
-import * as Notifications from "expo-notifications";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { useAuthStore } from "../Stores/authStore";
 import { useDatabaseStore } from "../Stores/databaseStore";
-import * as Google from "expo-auth-session/providers/google";
-import * as WebBrowser from "expo-web-browser";
-
-import { signInWithCredential } from "firebase/auth";
-
-if (Platform.OS !== "web") {
-  WebBrowser.maybeCompleteAuthSession();
-}
 
 const Index = () => {
-  const [request, response, promptAsync] =
-    Platform.OS !== "web"
-      ? Google.useAuthRequest({
-          androidClientId:
-            "924751066543-7u9jsh1k00b64eu4abqvo2jlicp0imbk.apps.googleusercontent.com",
-        })
-      : [null, null, null];
-  const [text, setText] = useState("");
   const [showSnackbar, setShowSnackbar] = useState(false);
+  const [signUpDialog, setSignUpDialog] = useState(false);
   const theme = useTheme();
   const styles = style(theme);
 
@@ -38,22 +29,47 @@ const Index = () => {
   const setUser = useAuthStore((state) => state.setUser);
 
   const handleLogin = () => {
-    if (Platform.OS === "web") {
+    if (Platform.OS == "web") {
       signInWithPopup(auth, new GoogleAuthProvider());
-    } else {
-      promptAsync();
     }
   };
 
-  useEffect(() => {
-    if (Platform.OS !== "web") {
-      if (response?.type === "success") {
-        const { id_token } = response.params;
-        const credential = GoogleAuthProvider.credential(id_token);
-        signInWithCredential(auth, credential);
-      }
-    }
-  }, [response]);
+  const loginEmail = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorMessage);
+      });
+  };
+
+  const signUp = () => {
+    createUserWithEmailAndPassword(auth, sEmail, sPass)
+      .then((userCredential) => {
+        // Signed up
+        const user = userCredential.user;
+        console.log(user);
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+        console.log(errorMessage);
+      });
+  };
+
+  const [sEmail, setSEmail] = useState("");
+  const [sPass, setSPass] = useState("");
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -72,10 +88,18 @@ const Index = () => {
         <Text variant="displaySmall">Login</Text>
         <TextInput
           label="Email"
-          value={text}
+          value={email}
           mode="flat"
           style={{ width: "100%" }}
-          onChangeText={(text) => setText(text)}
+          onChangeText={setEmail}
+        />
+        <TextInput
+          label="Password"
+          secureTextEntry
+          value={password}
+          mode="flat"
+          style={{ width: "100%" }}
+          onChangeText={setPassword}
         />
         <View
           style={{
@@ -84,16 +108,8 @@ const Index = () => {
             width: "100%",
           }}
         >
-          <Button mode="text" elevation={2} onPress={handleLogin}>
-            Login with google
-          </Button>
-          <Button
-            mode="contained"
-            elevation={2}
-            onPress={() => {
-              setShowSnackbar(true);
-            }}
-          >
+          <Button onPress={() => setSignUpDialog(true)}>Sign up</Button>
+          <Button mode="contained" elevation={2} onPress={loginEmail}>
             Login
           </Button>
         </View>
@@ -111,6 +127,30 @@ const Index = () => {
       >
         TODO!!
       </Snackbar>
+      <Portal>
+        <Dialog visible={signUpDialog} onDismiss={() => setSignUpDialog(false)}>
+          <Dialog.Title>Sign up</Dialog.Title>
+          <Dialog.Content style={{ gap: 20 }}>
+            <TextInput
+              value={sEmail}
+              placeholder="ex: test@gmail.com"
+              label="Email"
+              onChangeText={setSEmail}
+            />
+            <TextInput
+              value={sPass}
+              label="Password"
+              secureTextEntry
+              onChangeText={setSPass}
+            />
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button mode="contained" onPress={signUp}>
+              Sign up
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   );
 };
