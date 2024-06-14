@@ -22,12 +22,12 @@ const CategoryDrawerItem = ({
       // )}
       active={isActive(index)}
       onPress={() => {
-        navigation.navigate("Category");
         runOnJS(() => {
+          setCategory(category);
           getTasks(category.id);
           setSelIndex(index);
-          setCategory(category);
         })();
+        navigation.navigate("Category");
       }}
     />
   );

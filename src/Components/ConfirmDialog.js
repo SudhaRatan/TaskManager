@@ -14,13 +14,11 @@ const ConfirmDialog = forwardRef(
       setVisible(true);
     };
 
-    const [params, setParams] = useState(null);
     useImperativeHandle(
       ref,
       () => {
         return {
           showDialog,
-          setParams,
         };
       },
       []
@@ -52,7 +50,7 @@ const ConfirmDialog = forwardRef(
             </Button>
             <Button
               onPress={() => {
-                action(params);
+                action();
                 hideDialog();
               }}
             >

@@ -44,7 +44,6 @@ const CategoryScreen = ({ navigation }) => {
   const CategoryDeleteDialog = () => {
     setCategoryMenu(false);
     DeleteCategoryRef.current.showDialog();
-    DeleteCategoryRef.current.setParams(category);
   };
 
   return (
@@ -108,8 +107,8 @@ const CategoryScreen = ({ navigation }) => {
         text="All tasks in this Category will be deleted"
         dismissText="No"
         okText="Yes"
-        action={async (cat) => {
-          deleteCategory({ categoryId: cat.id });
+        action={() => {
+          deleteCategory({ categoryId: category.id });
           navigation.navigate("Home");
         }}
       />

@@ -108,12 +108,10 @@ export async function updateCategory({ categoryId, title, userId }) {
 export async function deleteCategory({ categoryId }) {
   if (categoryId) {
     const res = await getDocs(
-      collection(db, "tasks"),
-      where("category_id", "==", categoryId)
+      query(collection(db, "tasks"), where("category_id", "==", categoryId))
     );
     const batch = writeBatch(db);
     res.docs.forEach((d) => {
-      console.log(d.data());
       batch.delete(doc(db, "tasks", d.id));
     });
     await batch.commit();
