@@ -161,8 +161,8 @@ const TaskDetails = ({ task, subTasks }) => {
                 .toLocaleTimeString()
                 .split(" ")[0]
                 .slice(0, 5)} ${
-                Platform.OS === "web" &&
-                new Date(reminderDateTime).toLocaleTimeString().split(" ")[1]
+                Platform.OS === "web" ?
+                new Date(reminderDateTime).toLocaleTimeString().split(" ")[1] : ""
               }`
             : "Reminder ?"}
         </Chip>
