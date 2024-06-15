@@ -1,4 +1,4 @@
-import { Keyboard, ScrollView, StyleSheet, View } from "react-native";
+import { Keyboard, Platform, ScrollView, StyleSheet, View } from "react-native";
 import {
   Button,
   Chip,
@@ -161,6 +161,7 @@ const TaskDetails = ({ task, subTasks }) => {
                 .toLocaleTimeString()
                 .split(" ")[0]
                 .slice(0, 5)} ${
+                Platform.OS === "web" &&
                 new Date(reminderDateTime).toLocaleTimeString().split(" ")[1]
               }`
             : "Reminder ?"}
