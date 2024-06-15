@@ -4,6 +4,7 @@ import {
   and,
   collection,
   deleteDoc,
+  deleteField,
   doc,
   getDoc,
   getDocs,
@@ -143,6 +144,16 @@ export async function setTaskReminder({ taskId, reminder }) {
   try {
     await updateDoc(doc(db, "tasks", taskId), {
       reminder: Timestamp.fromDate(new Date(reminder)),
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function removeTaskReminder({taskId}){
+  try {
+    await updateDoc(doc(db, "tasks", taskId), {
+      reminder: deleteField(),
     });
   } catch (error) {
     console.error(error);

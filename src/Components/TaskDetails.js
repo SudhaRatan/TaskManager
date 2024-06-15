@@ -15,6 +15,7 @@ import {
   checkSubTask,
   createSubTask,
   deleteSubTask,
+  removeTaskReminder,
   setTaskReminder,
   updateTaskdescription,
 } from "../DL/firebaseFunctions";
@@ -26,7 +27,7 @@ const TaskDetails = ({ task, subTasks }) => {
   const [descIcon, setDescIcon] = useState("");
   const [reminder, setReminder] = useState(false);
 
-  const prevDateTime = task?.reminder?.toDate()
+  const prevDateTime = task?.reminder?.toDate();
 
   const [date, setDate] = useState(undefined);
   const [open, setOpen] = useState(false);
@@ -86,7 +87,7 @@ const TaskDetails = ({ task, subTasks }) => {
       minutes < 10 ? "0" + minutes : minutes
     }:00`;
     setReminderDateTime(d.join(" "));
-    setTaskReminder({taskId:task.id, reminder: d.join(" ")})
+    setTaskReminder({ taskId: task.id, reminder: d.join(" ") });
   };
 
   // for saving description using debouncing
@@ -167,8 +168,16 @@ const TaskDetails = ({ task, subTasks }) => {
         {reminderDateTime && (
           <Button
             mode="contained-tonal"
-            style={{ borderRadius: 8, justifyContent:"center", alignItems:"center", backgroundColor:theme.colors.errorContainer }}
-            onPress={() => setReminderDateTime(prevDateTime)}
+            style={{
+              borderRadius: 8,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: theme.colors.errorContainer,
+            }}
+            onPress={() => {
+              setReminderDateTime(null);
+              removeTaskReminder({ taskId: task.id });
+            }}
           >
             <Icon color={theme.colors.error} source="cancel" size={22} />
           </Button>
