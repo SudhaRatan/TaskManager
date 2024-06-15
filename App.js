@@ -4,7 +4,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import Navigation from "./src/Navigation";
 import { useDatabaseStore } from "./src/Stores/databaseStore";
 import { enGB, registerTranslation } from "react-native-paper-dates";
-registerTranslation("en-GB", enGB);
 import { Provider as PaperProvider } from "react-native-paper";
 // import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
@@ -19,6 +18,8 @@ Notifications.setNotificationHandler({
     shouldSetBadge: true,
   }),
 });
+
+registerTranslation("en-GB", enGB);
 
 (async function NotificationSetup() {
   if (Platform.OS === "android") {

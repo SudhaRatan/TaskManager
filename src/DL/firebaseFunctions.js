@@ -133,6 +133,22 @@ export function checkSubTask({ taskId, subtask }) {
   });
 }
 
+export function updateTaskdescription({ selectedTaskId, taskDescription }) {
+  updateDoc(doc(db, "tasks", selectedTaskId), {
+    description: taskDescription,
+  });
+}
+
+export async function setTaskReminder({ taskId, reminder }) {
+  try {
+    await updateDoc(doc(db, "tasks", taskId), {
+      reminder: Timestamp.fromDate(new Date(reminder)),
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export function deleteSubTask({ taskId, subtaskId }) {
   deleteDoc(doc(db, "tasks", taskId, "subtasks", subtaskId));
 }
@@ -156,12 +172,6 @@ export function getCategories({ user, setCategories }) {
   } catch (error) {
     console.error(error);
   }
-}
-
-export function updateTaskdescription({ selectedTaskId, taskDescription }) {
-  updateDoc(doc(db, "tasks", selectedTaskId), {
-    description: taskDescription,
-  });
 }
 
 export function getTasks({ categoryId, setTasks, uid }) {
