@@ -44,14 +44,14 @@ export default function Navigation() {
             }}
           />
           <Stack.Screen
-            options={({ navigation }) => ({
+            options={(props) => ({
               presentation: "modal",
               headerTitle: "Task details",
               headerStyle: {
                 borderBottomWidth: 0,
                 backgroundColor: theme.colors.background,
               },
-              header: () => <TaskDetailsHeader navigation={navigation} />,
+              header: () => <TaskDetailsHeader {...props} />,
             })}
             name="subtask"
             component={SubTaskScreen}

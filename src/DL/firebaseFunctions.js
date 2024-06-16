@@ -8,6 +8,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  limit,
   onSnapshot,
   orderBy,
   query,
@@ -150,7 +151,7 @@ export async function setTaskReminder({ taskId, reminder }) {
   }
 }
 
-export async function removeTaskReminder({taskId}){
+export async function removeTaskReminder({ taskId }) {
   try {
     await updateDoc(doc(db, "tasks", taskId), {
       reminder: deleteField(),
@@ -219,6 +220,37 @@ export async function deleteTask({ taskId }) {
   });
   await batch.commit();
   await deleteDoc(doc(db, "tasks", taskId));
+}
+
+export function getTodayTasks({ userId, setTasks }) {
+  var d = new Date().toString().split(" ");
+  d[4] = "00:00:00";
+  var fromDate = new Date(d.join(" "));
+  d[4] = "23:59:59";
+  var toDate = new Date(d.join(" "));
+  console.log(toDate, fromDate);
+  onSnapshot(
+    query(
+      collection(db, "tasks"),
+      and(
+        where("uid", "==", userId),
+        where("reminder", ">=", Timestamp.fromDate(fromDate)),
+        where("reminder", "<=", Timestamp.fromDate(toDate))
+      )
+    ),
+    (snapShot) => {
+      setTasks(snapShot.docs.map((i) => ({ id: i.id, ...i.data() })));
+    }
+  );
+}
+
+export function getRecentTasks({ userId, setTasks }) {
+  onSnapshot(
+    query(collection(db, "tasks"), where("uid", "==", userId), limit(10)),
+    (snapShot) => {
+      setTasks(snapShot.docs.map((i) => ({ id: i.id, ...i.data() })));
+    }
+  );
 }
 
 export function getSubTasks({ taskId, setSubtasks }) {

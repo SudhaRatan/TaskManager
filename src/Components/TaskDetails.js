@@ -1,4 +1,4 @@
-import { Keyboard, Platform, ScrollView, StyleSheet, View } from "react-native";
+import { Keyboard, Platform, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import {
   Button,
   Chip,
@@ -6,6 +6,7 @@ import {
   Icon,
   Text,
   TextInput,
+  TouchableRipple,
 } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 import { useBreakPoint } from "../utils/breakpoint";
@@ -145,7 +146,7 @@ const TaskDetails = ({ task, subTasks }) => {
           })}
       </View>
       <Divider />
-      <View style={{ flexDirection: "row", gap: 10 }}>
+      <View style={{ flexDirection: "row", gap: 10, justifyContent:"center", alignItems:"center" }}>
         <Chip
           selected={reminder}
           showSelectedOverlay={reminder}
@@ -167,21 +168,28 @@ const TaskDetails = ({ task, subTasks }) => {
             : "Reminder ?"}
         </Chip>
         {reminderDateTime && (
-          <Button
-            mode="contained-tonal"
+          <TouchableRipple
+            mode="elevated"
             style={{
+              position:"absolute",
               borderRadius: 8,
               justifyContent: "center",
+              backgroundColor:theme.colors.errorContainer,
               alignItems: "center",
-              backgroundColor: theme.colors.errorContainer,
+              top:0,
+              bottom:0,
+              margin:"auto",
+              right:0,
+              paddingHorizontal:8,
+              margin:5
             }}
             onPress={() => {
               setReminderDateTime(null);
               removeTaskReminder({ taskId: task.id });
             }}
           >
-            <Icon color={theme.colors.error} source="cancel" size={22} />
-          </Button>
+            <Icon color={theme.colors.error} source="cancel" size={18} />
+          </TouchableRipple>
         )}
       </View>
       <TextInput

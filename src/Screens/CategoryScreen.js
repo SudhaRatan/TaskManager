@@ -37,9 +37,6 @@ const CategoryScreen = ({ navigation }) => {
     DeleteRef.current.setParams(task);
   };
 
-  const DeleteTask = (task) => {
-    setCategoryTasks(categoryTasks.filter((t) => task.id !== t.id));
-  };
 
   const CategoryDeleteDialog = () => {
     setCategoryMenu(false);
@@ -86,7 +83,6 @@ const CategoryScreen = ({ navigation }) => {
         okText="Delete"
         iconName="alert"
         action={(task) => {
-          DeleteTask(task);
           deleteTask({ taskId: task.id });
         }}
       />
