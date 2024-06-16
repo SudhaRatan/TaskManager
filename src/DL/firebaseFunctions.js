@@ -246,7 +246,12 @@ export function getTodayTasks({ userId, setTasks }) {
 
 export function getRecentTasks({ userId, setTasks }) {
   onSnapshot(
-    query(collection(db, "tasks"), where("uid", "==", userId), limit(10)),
+    query(
+      collection(db, "tasks"),
+      where("uid", "==", userId),
+      orderBy("createdOn", "desc"),
+      limit(10)
+    ),
     (snapShot) => {
       setTasks(snapShot.docs.map((i) => ({ id: i.id, ...i.data() })));
     }
