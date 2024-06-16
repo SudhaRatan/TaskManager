@@ -5,6 +5,7 @@ import { useBreakPoint } from "../utils/breakpoint";
 const ConfirmDialog = forwardRef(
   ({ iconName, title, text, dismissText, okText, action }, ref) => {
     const [visible, setVisible] = useState(false);
+    const [params,setParams] = useState(null)
 
     const hideDialog = () => {
       setVisible(false);
@@ -19,6 +20,7 @@ const ConfirmDialog = forwardRef(
       () => {
         return {
           showDialog,
+          setParams
         };
       },
       []
@@ -50,7 +52,7 @@ const ConfirmDialog = forwardRef(
             </Button>
             <Button
               onPress={() => {
-                action();
+                action(params);
                 hideDialog();
               }}
             >
