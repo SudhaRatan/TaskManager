@@ -75,7 +75,7 @@ const CategoryScreen = ({ navigation }) => {
           navigation={navigation}
         />
       </View>
-      <FAB icon="plus" style={styles.fab} size="medium" onPress={showDialog} />
+      <FAB icon="plus" style={styles.fab} onLongPress={() => navigation.navigate("AI")} variant="tertiary" size="medium" onPress={showDialog} />
       <AddTask user={user} hideDialog={hideDialog} visible={visible} />
       <ConfirmDialog
         ref={DeleteRef}
@@ -99,7 +99,7 @@ const CategoryScreen = ({ navigation }) => {
       <ConfirmDialog
         ref={DeleteCategoryRef}
         iconName="alert"
-        title="Are you sure you want to delete this category ?"
+        title="Are you sure ?"
         text="All tasks in this Category will be deleted"
         dismissText="No"
         okText="Yes"

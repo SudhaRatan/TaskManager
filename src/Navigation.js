@@ -12,6 +12,7 @@ import { useTheme } from "react-native-paper";
 import TaskDetailsHeader from "./Components/TaskDetailsHeader";
 import DrawerHeader from "./Components/DrawerHeader";
 import { useAuthStore } from "./Stores/authStore";
+import AISCreen from "./Screens/AISCreen";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -56,6 +57,10 @@ export default function Navigation() {
             name="subtask"
             component={SubTaskScreen}
           />
+          <Stack.Screen options={(props) => ({
+            presentation: "transparentModal",
+            headerShown:false
+          })} component={AISCreen} name="AI" />
         </>
       )}
     </Stack.Navigator>

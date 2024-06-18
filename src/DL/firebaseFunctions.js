@@ -228,7 +228,6 @@ export function getTodayTasks({ userId, setTasks }) {
   var fromDate = new Date(d.join(" "));
   d[4] = "23:59:59";
   var toDate = new Date(d.join(" "));
-  console.log(toDate, fromDate);
   onSnapshot(
     query(
       collection(db, "tasks"),
@@ -248,7 +247,7 @@ export function getRecentTasks({ userId, setTasks }) {
   onSnapshot(
     query(
       collection(db, "tasks"),
-      where("uid", "==", userId),
+      and(where("uid", "==", userId), where("isChecked", "==", false)),
       orderBy("createdOn", "desc"),
       limit(10)
     ),

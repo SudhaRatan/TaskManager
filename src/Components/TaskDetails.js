@@ -1,9 +1,17 @@
-import { Keyboard, Platform, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Keyboard,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import {
   Button,
   Chip,
   Divider,
   Icon,
+  List,
   Text,
   TextInput,
   TouchableRipple,
@@ -39,9 +47,10 @@ const TaskDetails = ({ task, subTasks }) => {
   const taskDescription = task.description;
 
   const UpdateDescription = async () => {
+    setDesc(taskDesc.trim())
     updateTaskdescription({
       selectedTaskId: task.id,
-      taskDescription: taskDesc,
+      taskDescription: taskDesc.trim(),
     });
   };
 
@@ -51,8 +60,8 @@ const TaskDetails = ({ task, subTasks }) => {
 
   const addSubTask = () => {
     Keyboard.dismiss();
-    if (subTaskTitle !== "") {
-      createSubTask({ subtaskTitle: subTaskTitle, selectedTaskId: task.id });
+    if (subTaskTitle !== "" && subTaskTitle.trim() !== "") {
+      createSubTask({ subtaskTitle: subTaskTitle.trim(), selectedTaskId: task.id });
       setTitle("");
     }
   };
@@ -94,7 +103,7 @@ const TaskDetails = ({ task, subTasks }) => {
   // for saving description using debouncing
   useEffect(() => {
     var unsub;
-    if (taskDesc !== "" && taskDesc !== taskDescription) {
+    if (taskDesc !== "" && taskDesc !== taskDescription && taskDesc.trim() !== "") {
       setDescIcon("content-save");
       unsub = setTimeout(async () => {
         await UpdateDescription();
@@ -113,7 +122,73 @@ const TaskDetails = ({ task, subTasks }) => {
     <View
       style={{ width: useBreakPoint("100%", "75%", "50%"), flex: 1, gap: 10 }}
     >
-      <Text style={style.text}>{task.title}</Text>
+      <List.Accordion title={task.title} titleStyle={style.text} titleNumberOfLines={100}>
+        <TextInput
+          label="Description"
+          multiline
+          value={taskDesc}
+          onChangeText={setDesc}
+          right={<TextInput.Icon icon={descIcon} />}
+          style={{ backgroundColor: theme.colors.secondaryContainer, marginVertical:10 }}
+        />
+      </List.Accordion>
+      <View
+        style={{
+          flexDirection: "row",
+          gap: 10,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Chip
+          selected={reminder}
+          showSelectedOverlay={reminder}
+          onPress={handleReminder}
+          textStyle={{ padding: 5 }}
+          icon={reminder ? "calendar-check" : "calendar-clock"}
+          style={{ flex: 1 }}
+        >
+          {reminderDateTime
+            ? `On ${new Date(
+                reminderDateTime
+              ).toLocaleDateString()} at ${new Date(reminderDateTime)
+                .toLocaleTimeString()
+                .split(" ")[0]
+                .slice(0, 5)} ${
+                Platform.OS === "web"
+                  ? new Date(reminderDateTime)
+                      .toLocaleTimeString()
+                      .split(" ")[1]
+                  : ""
+              }`
+            : "Reminder ?"}
+        </Chip>
+        {reminderDateTime && (
+          <TouchableRipple
+            mode="elevated"
+            style={{
+              position: "absolute",
+              borderRadius: 8,
+              justifyContent: "center",
+              backgroundColor: theme.colors.errorContainer,
+              alignItems: "center",
+              top: 0,
+              bottom: 0,
+              margin: "auto",
+              right: 0,
+              paddingHorizontal: 8,
+              margin: 5,
+            }}
+            onPress={() => {
+              setReminderDateTime(null);
+              removeTaskReminder({ taskId: task.id });
+            }}
+          >
+            <Icon color={theme.colors.error} source="cancel" size={18} />
+          </TouchableRipple>
+        )}
+      </View>
+      <Divider />
       <TextInput
         value={subTaskTitle}
         right={
@@ -121,7 +196,6 @@ const TaskDetails = ({ task, subTasks }) => {
             <TextInput.Icon onPress={addSubTask} icon="plus-box" size={30} />
           )
         }
-        placeholder="Type a subtask..."
         label="Add a sub task"
         mode="outlined"
         style={{ backgroundColor: theme.colors.background }}
@@ -145,62 +219,7 @@ const TaskDetails = ({ task, subTasks }) => {
             );
           })}
       </View>
-      <Divider />
-      <View style={{ flexDirection: "row", gap: 10, justifyContent:"center", alignItems:"center" }}>
-        <Chip
-          selected={reminder}
-          showSelectedOverlay={reminder}
-          onPress={handleReminder}
-          textStyle={{ padding: 5 }}
-          icon={reminder ? "calendar-check" : "calendar-clock"}
-          style={{ flex: 1 }}
-        >
-          {reminderDateTime
-            ? `On ${new Date(
-                reminderDateTime
-              ).toLocaleDateString()} at ${new Date(reminderDateTime)
-                .toLocaleTimeString()
-                .split(" ")[0]
-                .slice(0, 5)} ${
-                Platform.OS === "web" ?
-                new Date(reminderDateTime).toLocaleTimeString().split(" ")[1] : ""
-              }`
-            : "Reminder ?"}
-        </Chip>
-        {reminderDateTime && (
-          <TouchableRipple
-            mode="elevated"
-            style={{
-              position:"absolute",
-              borderRadius: 8,
-              justifyContent: "center",
-              backgroundColor:theme.colors.errorContainer,
-              alignItems: "center",
-              top:0,
-              bottom:0,
-              margin:"auto",
-              right:0,
-              paddingHorizontal:8,
-              margin:5
-            }}
-            onPress={() => {
-              setReminderDateTime(null);
-              removeTaskReminder({ taskId: task.id });
-            }}
-          >
-            <Icon color={theme.colors.error} source="cancel" size={18} />
-          </TouchableRipple>
-        )}
-      </View>
-      <TextInput
-        label="Description"
-        multiline
-        placeholder="Add description for your task"
-        value={taskDesc}
-        onChangeText={setDesc}
-        right={<TextInput.Icon icon={descIcon} />}
-        style={{ backgroundColor: theme.colors.secondaryContainer }}
-      />
+
       <DatePickerModal
         locale="en-GB"
         mode="single"

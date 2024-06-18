@@ -141,7 +141,7 @@ const Home = ({ navigation }) => {
                     translateY: interpolate(
                       fab.value,
                       [0, 1],
-                      [menuHeight / 2, -menuHeight]
+                      [menuHeight / 2, -menuHeight * 1.2]
                     ),
                   },
                   { scale: interpolate(fab.value, [0, 1], [0.3, 1]) },
@@ -149,28 +149,67 @@ const Home = ({ navigation }) => {
                     translateX: interpolate(
                       fab.value,
                       [0, 1],
-                      [menuWidth * 2, 0]
+                      [menuWidth / 2, -menuWidth / 8]
                     ),
                   },
                 ],
               })),
-              { gap: 5, paddingBottom: 10 },
+              { gap: 15, paddingBottom: 10 },
             ]}
           >
-            <FAB
-              icon="shape-plus"
-              label="Category"
-              onPress={showDialog}
-              size="medium"
-            />
-            <FAB
-              icon="checkbox-marked-circle-plus-outline"
-              label="Task"
-              size="medium"
-              onPress={showTaskDialog}
-            />
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 15 }}
+            >
+              <Animated.Text
+                style={[
+                  {
+                    color: theme.colors.inverseSurface,
+                    fontSize: 16,
+                    fontWeight: 500,
+                  },
+                  useAnimatedStyle(() => ({
+                    opacity: interpolate(fab.value, [0.8, 1], [0, 1]),
+                  })),
+                ]}
+              >
+                Category
+              </Animated.Text>
+              <FAB
+                icon="shape-plus"
+                // label="Category"
+                onPress={showDialog}
+                size="small"
+                variant="tertiary"
+              />
+            </View>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 15 }}
+            >
+              <Animated.Text
+                style={[
+                  {
+                    color: theme.colors.inverseSurface,
+                    fontSize: 16,
+                    fontWeight: 500,
+                  },
+                  useAnimatedStyle(() => ({
+                    opacity: interpolate(fab.value, [0.8, 1], [0, 1]),
+                  })),
+                ]}
+              >
+                Task
+              </Animated.Text>
+              <FAB
+                icon="checkbox-marked-circle-plus-outline"
+                // label="Task"
+                size="small"
+                onPress={showTaskDialog}
+                variant="tertiary"
+              />
+            </View>
           </Animated.View>
           <FAB
+            variant="tertiary"
             onLayout={({
               nativeEvent: {
                 layout: { height, width },
@@ -183,6 +222,7 @@ const Home = ({ navigation }) => {
             style={style.fab}
             size="medium"
             onPress={openMenu}
+            onLongPress={() => navigation.navigate("AI")}
           />
         </>
       ) : (
@@ -191,9 +231,15 @@ const Home = ({ navigation }) => {
           open={open}
           visible
           onStateChange={onStateChange}
+          variant="tertiary"
           onPress={() => {}}
           actions={[
-            { icon: "shape-plus", label: "Category", onPress: showDialog },
+            {
+              icon: "shape-plus",
+              label: "Category",
+              onPress: showDialog,
+              onLongPress: () => navigation.navigate("AI"),
+            },
             {
               icon: "checkbox-marked-circle-plus-outline",
               label: "Task",
@@ -232,6 +278,8 @@ const styles = (props) =>
       margin: 16,
       right: 0,
       bottom: 0,
+      justifyContent: "start",
+      alignItems: "flex-end",
     },
   });
 

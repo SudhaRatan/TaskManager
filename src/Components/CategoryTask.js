@@ -23,7 +23,6 @@ const CategoryTask = ({ task, del, categoryId, navigation }) => {
     setMenuvisible(false);
     setCanEdit(true);
   };
-
   const upadateTaskTitle = () => {
     setCanEdit(false);
     upadateTasktitle({ taskId: task.id, title: editText });
@@ -111,7 +110,7 @@ const CategoryTask = ({ task, del, categoryId, navigation }) => {
                 style.text,
                 {
                   textDecorationLine: task.isChecked ? "line-through" : "none",
-                  color: theme.colors.primary,
+                  color: task.isChecked ? theme.colors.onSurfaceDisabled : theme.colors.primary,
                 },
               ]}
               numberOfLines={1}

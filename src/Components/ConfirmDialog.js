@@ -1,11 +1,12 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
-import { Button, Dialog, Portal, Text } from "react-native-paper";
+import { Button, Dialog, Icon, Portal, Text } from "react-native-paper";
 import { useBreakPoint } from "../utils/breakpoint";
+import { View } from "react-native";
 
 const ConfirmDialog = forwardRef(
   ({ iconName, title, text, dismissText, okText, action }, ref) => {
     const [visible, setVisible] = useState(false);
-    const [params,setParams] = useState(null)
+    const [params, setParams] = useState(null);
 
     const hideDialog = () => {
       setVisible(false);
@@ -20,7 +21,7 @@ const ConfirmDialog = forwardRef(
       () => {
         return {
           showDialog,
-          setParams
+          setParams,
         };
       },
       []
@@ -34,12 +35,15 @@ const ConfirmDialog = forwardRef(
           style={{
             width: useBreakPoint("90%", "70%", "45%"),
             alignSelf: "center",
-            maxWidth:400
+            maxWidth: 400,
           }}
         >
-          {iconName && <Dialog.Icon size={30} icon={iconName} />}
-          <Dialog.Title style={{ textAlign: "center" }}>
-            {title ? title : "Alert"}
+          <Dialog.Title>
+            <View style={{flexDirection:"row", gap:10}}>
+              {iconName && <Icon size={30} source={iconName} />}
+
+              {title ? <Text>{title}</Text> : <Text>Alert</Text>}
+            </View>
           </Dialog.Title>
           <Dialog.Content>
             <Text style={{ fontSize: 16 }} variant="bodyMedium">
