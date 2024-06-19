@@ -8,6 +8,8 @@ import {
   useTheme,
   Dialog,
   Portal,
+  Icon,
+  ActivityIndicator,
 } from "react-native-paper";
 import { useBreakPoint } from "../utils/breakpoint";
 import {
@@ -22,6 +24,18 @@ import { useDatabaseStore } from "../Stores/databaseStore";
 const Index = () => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [signUpDialog, setSignUpDialog] = useState(false);
+
+  const [sEmail, setSEmail] = useState("");
+  const [sPass, setSPass] = useState("");
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [loggingIn, setLoggingIn] = useState(false)
+  const [signingUp, setSigningUp] = useState(false)
+
+  const [sbMessage, setSbMessage] = useState("")
+
   const theme = useTheme();
   const styles = style(theme);
 
@@ -35,39 +49,40 @@ const Index = () => {
   };
 
   const loginEmail = () => {
+    setLoggingIn(true)
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
+        setLoggingIn(false)
         // ...
       })
       .catch((error) => {
+        setLoggingIn(false)
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorMessage);
+        setSbMessage(errorMessage)
+        setShowSnackbar(true)
       });
   };
 
   const signUp = () => {
+    setSigningUp(true)
     createUserWithEmailAndPassword(auth, sEmail, sPass)
       .then((userCredential) => {
-        // Signed up
         const user = userCredential.user;
-        // ...
+        setSigningUp(false)
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        // ..
+        setSigningUp(false)
         console.log(errorMessage);
+        setSbMessage(errorMessage)
+        setShowSnackbar(true)
       });
   };
-
-  const [sEmail, setSEmail] = useState("");
-  const [sPass, setSPass] = useState("");
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -107,9 +122,11 @@ const Index = () => {
           }}
         >
           <Button onPress={() => setSignUpDialog(true)}>Sign up</Button>
-          <Button mode="contained" elevation={2} onPress={loginEmail}>
-            Login
-          </Button>
+          {loggingIn ? <ActivityIndicator animating /> :
+            <Button mode="contained" elevation={2} onPress={loginEmail}>
+              Login
+            </Button>
+          }
         </View>
       </View>
       <Snackbar
@@ -123,7 +140,7 @@ const Index = () => {
         }}
         style={{ width: useBreakPoint(null, "50%", "40%") }}
       >
-        TODO!!
+        {sbMessage}
       </Snackbar>
       <Portal>
         <Dialog style={{ width: useBreakPoint("90%", "70%", "45%"), alignSelf: "center" }} visible={signUpDialog} onDismiss={() => setSignUpDialog(false)}>
@@ -143,11 +160,14 @@ const Index = () => {
             />
           </Dialog.Content>
           <Dialog.Actions>
-            <Button mode="contained" onPress={signUp}>
-              <Text style={{marginHorizontal:10, color:theme.colors.secondaryContainer}}>
-                Sign up
-              </Text>
-            </Button>
+            {
+              signingUp ? <ActivityIndicator animating /> :
+                <Button mode="contained" onPress={signUp}>
+                  <Text style={{ marginHorizontal: 10, color: theme.colors.secondaryContainer }}>
+                    Sign up
+                  </Text>
+                </Button>
+            }
           </Dialog.Actions>
         </Dialog>
       </Portal>
