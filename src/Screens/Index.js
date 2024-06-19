@@ -126,7 +126,7 @@ const Index = () => {
         TODO!!
       </Snackbar>
       <Portal>
-        <Dialog visible={signUpDialog} onDismiss={() => setSignUpDialog(false)}>
+        <Dialog style={{ width: useBreakPoint("90%", "70%", "45%"), alignSelf: "center" }} visible={signUpDialog} onDismiss={() => setSignUpDialog(false)}>
           <Dialog.Title>Sign up</Dialog.Title>
           <Dialog.Content style={{ gap: 20 }}>
             <TextInput
@@ -144,7 +144,9 @@ const Index = () => {
           </Dialog.Content>
           <Dialog.Actions>
             <Button mode="contained" onPress={signUp}>
-              Sign up
+              <Text style={{marginHorizontal:10, color:theme.colors.secondaryContainer}}>
+                Sign up
+              </Text>
             </Button>
           </Dialog.Actions>
         </Dialog>
