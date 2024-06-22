@@ -13,6 +13,7 @@ import { useNavigationState } from "@react-navigation/native";
 import { createCategoriesAI, createTasksAI } from "../DL/firebaseFunctions";
 import { useCategoryStore } from "../Stores/categoryStore";
 import { useAuthStore } from "../Stores/authStore";
+import { env } from "../utils/config";
 
 const AISCreen = ({ navigation }) => {
   const theme = useTheme();
@@ -102,7 +103,7 @@ const AISCreen = ({ navigation }) => {
       .then((base64Data) => {
         setMessage("Transcribing");
         axios
-          .post(`${process.env.EXPO_PUBLIC_API_KEY}/transcribe`, {
+          .post(`${env.API}/transcribe`, {
             audio: base64Data,
             platform: Platform.OS,
           })
@@ -129,7 +130,7 @@ const AISCreen = ({ navigation }) => {
   const sendPrompt = (prompt) => {
     setMessage("Getting response");
     axios
-      .get(`${process.env.EXPO_PUBLIC_API_KEY}/prompt/${prompt}`)
+      .get(`${env.API}/prompt/${prompt}`)
       .then(async (data) => {
         setMessage("Translating to tasks");
         const res = data.data;
