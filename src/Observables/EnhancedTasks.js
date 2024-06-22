@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet, View } from "react-native";
 import CategoryTask from "../Components/CategoryTask";
 import { useBreakPoint } from "../utils/breakpoint";
+import { ActivityIndicator, Text } from "react-native-paper";
 
 
 const CategoryTasks = ({ tasks, ShowDeleteDialog,navigation }) => {
@@ -13,7 +14,7 @@ const CategoryTasks = ({ tasks, ShowDeleteDialog,navigation }) => {
       }}
       contentContainerStyle={styles.scrollContainer}
     >
-      {tasks.map((task, index) => {
+      {tasks ? tasks.length > 0 ? tasks.map((task, index) => {
         return (
           <CategoryTask
             del={ShowDeleteDialog}
@@ -23,7 +24,7 @@ const CategoryTasks = ({ tasks, ShowDeleteDialog,navigation }) => {
             navigation={navigation}
           />
         );
-      })}
+      }): <Text>No tasks added</Text> : <ActivityIndicator size="large" />}
     </ScrollView>
   );
 };

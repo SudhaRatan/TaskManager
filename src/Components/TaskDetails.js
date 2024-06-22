@@ -35,7 +35,7 @@ const TaskDetails = ({ task, subTasks }) => {
   const [taskDesc, setDesc] = useState(task.description);
   const [descIcon, setDescIcon] = useState("");
   const [reminder, setReminder] = useState(false);
-
+  
   const prevDateTime = task?.reminder?.toDate();
 
   const [date, setDate] = useState(undefined);

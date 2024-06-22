@@ -5,6 +5,6 @@ export const useCategoryStore = create((set) => ({
   setCategory: (categor) => set({ category: categor }),
   categoryMenu: false,
   setCategoryMenu: (value) => set({ categoryMenu: value }),
-  categories: [],
+  categories: null,
   setCategories: (value) => set({ categories: value }),
 }));

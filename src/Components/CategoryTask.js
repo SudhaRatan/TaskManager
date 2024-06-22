@@ -38,7 +38,7 @@ const CategoryTask = ({ task, del, categoryId, navigation }) => {
       c
     >
       <TouchableRipple
-        onPress={async () => {
+        onPress={() => {
           checkTask({ task });
         }}
         onLongPress={() => {

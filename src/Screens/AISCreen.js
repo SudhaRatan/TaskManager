@@ -1,47 +1,55 @@
-import { View, Text, Image, TouchableOpacity, Dimensions } from "react-native";
-import React, { useState } from "react";
-import { Button, useTheme } from "react-native-paper";
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  Platform,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
 import { Audio } from "expo-av";
 import axios from "axios";
+import { useNavigationState } from "@react-navigation/native";
+import { createCategoriesAI, createTasksAI } from "../DL/firebaseFunctions";
+import { useCategoryStore } from "../Stores/categoryStore";
+import { useAuthStore } from "../Stores/authStore";
 
 const AISCreen = ({ navigation }) => {
   const theme = useTheme();
   const [recording, setRecording] = useState(null);
+  const [message, setMessage] = useState(null);
   const [permissionResponse, requestPermission] = Audio.usePermissions();
   const { height } = Dimensions.get("screen");
 
   const [sound, setSound] = useState();
   const [uri, setUri] = useState(null);
+  const [selectCatOnClickCallback, setSelectCatOnClickCallback] =
+    useState(null);
+  const [canSelectCategory, setCanSelectCategory] = useState(false);
+
+  const category = useCategoryStore((state) => state.category);
+  const user = useAuthStore((state) => state.user);
+  const index = useNavigationState((state) => state.index);
+
+  useEffect(() => {
+    if (index === 0) {
+      navigation.navigate("app");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "app" }],
+      });
+    }
+  }, []);
 
   async function playSound() {
-    console.log("Loading Sound");
-    const { sound } = await Audio.Sound.createAsync({ uri });
-    setSound(sound);
-    console.log("Playing Sound", sound);
-    await sound.playAsync();
+    try {
+      const { sound } = await Audio.Sound.createAsync({ uri });
+      setSound(sound);
+      await sound.playAsync();
+    } catch (error) {
+      console.log(error);
+    }
   }
-
-  //   function blobToBase64(blobUrl) {
-  //     return new Promise((resolve, reject) => {
-  //       const xhr = new XMLHttpRequest();
-  //       xhr.onload = function () {
-  //         if (this.status === 200) {
-  //           resolve(this.response);
-  //         } else {
-  //           reject(new Error("Failed to fetch image data"));
-  //         }
-  //       };
-  //       xhr.onerror = reject;
-  //       xhr.open("GET", blobUrl);
-  //       xhr.responseType = "arraybuffer";
-  //       xhr.send();
-  //     }).then((arrayBuffer) => {
-  //       return (
-  //         "data:audio/webm;base64," +
-  //         btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer)))
-  //       );
-  //     });
-  //   }
 
   const blobToBase64 = (blob) => {
     return new Promise((resolve, reject) => {
@@ -67,13 +75,12 @@ const AISCreen = ({ navigation }) => {
         playsInSilentModeIOS: true,
       });
 
-      console.log("Starting recording..");
       const { recording } = await Audio.Recording.createAsync(
         Audio.RecordingOptionsPresets.HIGH_QUALITY
       );
       setRecording(recording);
-      console.log("Recording started");
     } catch (err) {
+      setRecording(null);
       console.error("Failed to start recording", err);
     }
   };
@@ -90,37 +97,83 @@ const AISCreen = ({ navigation }) => {
     setRecording(null);
     const response = await fetch(uri);
     const data = await response.blob();
-    console.log(data);
-    axios
-      .post(`https://api.openai.com/v1/audio/transcriptions`, {
-        model: "whisper-1",
-        file: data,
-      },{headers:{
-        Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPEN_AI_KEY}`
-      }})
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error));
-    // blobToBase64(data)
-    //   .then((base64Data) => {
-    //     console.log(base64Data);
-    //     axios
-    //       .post(`${process.env.EXPO_PUBLIC_API_KEY}/search`, {
-    //         audio: "data:audio/webm;base64,"+base64Data,
-    //       })
-    //       .then((data) => {
-    //         console.log(data);
-    //       })
-    //       .catch((error) => console.error(error));
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
+
+    blobToBase64(data)
+      .then((base64Data) => {
+        setMessage("Transcribing");
+        axios
+          .post(`${process.env.EXPO_PUBLIC_API_KEY}/transcribe`, {
+            audio: base64Data,
+            platform: Platform.OS,
+          })
+          .then((data) => {
+            console.log(data.data);
+            sendPrompt(data.data);
+          })
+          .catch((error) => {
+            setMessage(null);
+            // console.error(error);
+          });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
-  const cancelRecording = () => {
+  const cancelRecording = async () => {
+    await recording.stopAndUnloadAsync();
     setRecording(null);
     navigation.goBack();
   };
+
+  const sendPrompt = (prompt) => {
+    setMessage("Getting response");
+    axios
+      .get(`${process.env.EXPO_PUBLIC_API_KEY}/prompt/${prompt}`)
+      .then(async (data) => {
+        setMessage("Translating to tasks");
+        const res = data.data;
+        if (res.name === "task" && res.type === "single") {
+          if (category) {
+            await createTasksAI(
+              res.data.map((i) => ({
+                ...i,
+                category_id: category.id,
+              })),
+              user.uid
+            );
+            setMessage(null);
+            navigation.goBack("");
+          } else {
+            setSelectCatOnClickCallback(() => {
+              return async (categoryId) => {
+                await createTasksAI(
+                  res.data.map((i) => ({
+                    ...i,
+                    category_id: categoryId,
+                  }))
+                );
+                setMessage(null);
+                navigation.goBack("");
+              };
+            });
+            setCanSelectCategory(true);
+          }
+        } else if (res.name === "category") {
+          await createCategoriesAI({ categories: res.data, userId: user.uid });
+          setMessage(null);
+          navigation.goBack("");
+        }
+      })
+      .catch((error) => {
+        console.warn(error);
+        setMessage(null);
+      });
+  };
+
+  useEffect(() => {
+    startRecording();
+  }, [permissionResponse]);
 
   return (
     <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
@@ -149,9 +202,14 @@ const AISCreen = ({ navigation }) => {
           right: 0,
           margin: "auto",
           width: "fit-content",
-          //   transform:[{translateY:"100%"}]
         }}
       >
+        {message && (
+          <>
+            <ActivityIndicator size={"small"} />
+            <Text>{message}</Text>
+          </>
+        )}
         {recording ? (
           <>
             <Image
@@ -159,20 +217,20 @@ const AISCreen = ({ navigation }) => {
               style={{ width: 80, height: 80 }}
             />
             <Button mode="contained" onPress={stopRecording}>
-              Stop recording
+              Stop
             </Button>
             <Button mode="contained" onPress={cancelRecording}>
               Cancel
             </Button>
           </>
         ) : (
-          <>
+          !message && (
             <Button mode="contained" onPress={startRecording}>
-              Start recording
+              Start
             </Button>
-          </>
+          )
         )}
-        <Button onPress={playSound}>Play sound</Button>
+        {/* <Button onPress={playSound}>Play sound</Button> */}
       </View>
     </View>
   );

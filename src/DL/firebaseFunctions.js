@@ -6,7 +6,6 @@ import {
   deleteDoc,
   deleteField,
   doc,
-  getDoc,
   getDocs,
   limit,
   onSnapshot,
@@ -33,25 +32,40 @@ export async function createTaskAI(data) {
   });
 }
 
-export async function createTasksAI(tasks) {
+export async function createTasksAI(tasks, uid) {
   for (var task of tasks) {
-    var subtasks;
+    var subtasks = [];
     if (task.subtasks) {
       subtasks = task.subtasks;
       delete task.subtasks;
     }
+    var reminder = null;
+    if (
+      task.reminder != null &&
+      task.reminder != undefined &&
+      task.reminder != ""
+    ) {
+      reminder = Timestamp.fromDate(
+        new Date(task.reminder.slice(0, task.reminder.length - 1))
+      );
+    }
     const date = new Date();
+    console.log(`adding task -> ${task.title}`);
     const t = await addDoc(collection(db, "tasks"), {
       ...task,
+      reminder,
+      uid,
       isChecked: false,
       createdOn: Timestamp.fromDate(date),
     });
+    console.log(`Added task -> ${task.title}`);
     for (const subtask of subtasks) {
       await createSubTask({
         selectedTaskId: t.id,
         subtaskTitle: subtask.title,
       });
     }
+    console.log("Done");
   }
 }
 
@@ -59,7 +73,7 @@ export async function createCategoriesAI({ categories, userId }) {
   for (var category of categories) {
     var c = await createCategory({ categoryTitle: category.title, userId });
     category.tasks = category.tasks.map((i) => ({ ...i, category_id: c.id }));
-    createTasksAI(category.tasks);
+    await createTasksAI(category.tasks, userId);
   }
 }
 
@@ -143,6 +157,7 @@ export function updateTaskdescription({ selectedTaskId, taskDescription }) {
 
 export async function setTaskReminder({ taskId, reminder }) {
   try {
+    console.log(reminder);
     await updateDoc(doc(db, "tasks", taskId), {
       reminder: Timestamp.fromDate(new Date(reminder)),
     });

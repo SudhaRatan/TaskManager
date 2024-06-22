@@ -1,13 +1,11 @@
-import { Menu } from "react-native-paper";
+import { ActivityIndicator, Menu, Text } from "react-native-paper";
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { useCategoryStore } from "../Stores/categoryStore";
 import { useTaskStore } from "../Stores/taskStore";
 import { runOnJS } from "react-native-reanimated";
 import CategoryDrawerItem from "../Components/CategoryDrawerItem";
-import {
-  getTasks as getCategoryTasks,
-} from "../DL/firebaseFunctions";
+import { getTasks as getCategoryTasks } from "../DL/firebaseFunctions";
 
 export function Categories({ categories, navigation, state, user }) {
   const [selIndex, setSelIndex] = useState(0);
@@ -31,30 +29,37 @@ export function Categories({ categories, navigation, state, user }) {
   };
 
   useEffect(() => {
-    if (categories.length > 0) {
+    if (categories?.length > 0) {
       getTasks(categories[0].id);
       setCategory(categories[0]);
     } else {
       navigation.navigate("Home");
     }
   }, []);
-
   return (
     <>
-      {categories.map((category, index) => {
-        return (
-          <CategoryDrawerItem
-            category={category}
-            index={index}
-            key={index}
-            isActive={isActive}
-            navigation={navigation}
-            getTasks={getTasks}
-            setCategory={setCategory}
-            setSelIndex={setSelIndex}
-          />
-        );
-      })}
+      {categories ? (
+        categories.length > 0 ? (
+          categories.map((category, index) => {
+            return (
+              <CategoryDrawerItem
+                category={category}
+                index={index}
+                key={index}
+                isActive={isActive}
+                navigation={navigation}
+                getTasks={getTasks}
+                setCategory={setCategory}
+                setSelIndex={setSelIndex}
+              />
+            );
+          })
+        ) : (
+          <Text>No categories added</Text>
+        )
+      ) : (
+        <ActivityIndicator size="small" />
+      )}
     </>
   );
 }

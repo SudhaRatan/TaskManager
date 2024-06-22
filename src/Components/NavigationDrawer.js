@@ -12,8 +12,8 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
   const [catAcc, setCatAcc] = useState(true);
 
   const setCategory = useCategoryStore((state) => state.setCategory);
-  const categories = useCategoryStore(state => state.categories)
-  const setCategories = useCategoryStore(state => state.setCategories)
+  const categories = useCategoryStore((state) => state.categories);
+  const setCategories = useCategoryStore((state) => state.setCategories);
   const setUser = useAuthStore((state) => state.setUser);
   const user = useAuthStore((state) => state.user);
   const auth = useDatabaseStore((state) => state.auth);

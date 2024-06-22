@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Platform, ScrollView, StyleSheet, View } from "react-native";
-import { Text, FAB, useTheme, List } from "react-native-paper";
+import { Text, FAB, useTheme, List, ActivityIndicator } from "react-native-paper";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -35,8 +35,8 @@ const Home = ({ navigation }) => {
   const [menuHeight, setMenuHeight] = useState(0);
   const [menuWidth, setMenuWidth] = useState(0);
 
-  const [recentTasks, setRecentTasks] = useState([]);
-  const [todayTasks, setTodayTasks] = useState([]);
+  const [recentTasks, setRecentTasks] = useState(null);
+  const [todayTasks, setTodayTasks] = useState(null);
 
   const DeleteRef = useRef();
   const ShowDeleteDialog = (task) => {
@@ -94,7 +94,7 @@ const Home = ({ navigation }) => {
               gap: 5,
             }}
           >
-            {todayTasks.map((task) => {
+            {todayTasks ? todayTasks.length > 0 ? todayTasks.map((task) => {
               return (
                 <CategoryTask
                   key={task.id}
@@ -103,7 +103,7 @@ const Home = ({ navigation }) => {
                   del={ShowDeleteDialog}
                 />
               );
-            })}
+            }) : <Text>No tasks today</Text> : <ActivityIndicator size="small" />}
           </ScrollView>
         </List.Accordion>
         <List.Accordion
@@ -117,7 +117,7 @@ const Home = ({ navigation }) => {
               gap: 5,
             }}
           >
-            {recentTasks.map((task) => {
+            {recentTasks ? recentTasks.length > 0 ? recentTasks.map((task) => {
               return (
                 <CategoryTask
                   key={task.id}
@@ -125,8 +125,8 @@ const Home = ({ navigation }) => {
                   navigation={navigation}
                   del={ShowDeleteDialog}
                 />
-              );
-            })}
+              )
+            }) : <Text>No recently tasks added</Text> : <ActivityIndicator size="small" />}
           </ScrollView>
         </List.Accordion>
       </ScrollView>
@@ -176,7 +176,6 @@ const Home = ({ navigation }) => {
               </Animated.Text>
               <FAB
                 icon="shape-plus"
-                // label="Category"
                 onPress={showDialog}
                 size="small"
                 variant="tertiary"
@@ -233,6 +232,7 @@ const Home = ({ navigation }) => {
           onStateChange={onStateChange}
           variant="tertiary"
           onPress={() => {}}
+          onLongPress={() => navigation.navigate("AI")}
           actions={[
             {
               icon: "shape-plus",

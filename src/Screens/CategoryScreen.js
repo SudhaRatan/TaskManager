@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
-import { FAB, Menu, Text, useTheme } from "react-native-paper";
+import React, { useRef, useState } from "react";
+import { FAB, Menu, useTheme } from "react-native-paper";
 import AddTask from "../Components/AddTask";
 import { useCategoryStore } from "../Stores/categoryStore";
 import ConfirmDialog from "../Components/ConfirmDialog";
@@ -23,7 +23,6 @@ const CategoryScreen = ({ navigation }) => {
   const styles = style(theme);
 
   const categoryTasks = useTaskStore((state) => state.categoryTasks);
-  const setCategoryTasks = useTaskStore((state) => state.setCategoryTasks);
   const category = useCategoryStore((state) => state.category);
   const categoryMenu = useCategoryStore((state) => state.categoryMenu);
   const setCategoryMenu = useCategoryStore((state) => state.setCategoryMenu);
