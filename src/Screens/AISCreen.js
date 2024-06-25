@@ -19,6 +19,7 @@ const AISCreen = ({ navigation }) => {
   const theme = useTheme();
   const [recording, setRecording] = useState(null);
   const [message, setMessage] = useState(null);
+  const [promptMsg, setPrompt] = useState(null)
   const [permissionResponse, requestPermission] = Audio.usePermissions();
   const { height } = Dimensions.get("screen");
 
@@ -88,7 +89,8 @@ const AISCreen = ({ navigation }) => {
 
   const stopRecording = async () => {
     console.log("Stopping recording..");
-    await recording.stopAndUnloadAsync();
+    try {
+      await recording.stopAndUnloadAsync();
     await Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
     });
@@ -109,9 +111,11 @@ const AISCreen = ({ navigation }) => {
           })
           .then((data) => {
             console.log(data.data);
+            setPrompt(data.data)
             sendPrompt(data.data);
           })
           .catch((error) => {
+            setPrompt(null)
             setMessage(null);
             // console.error(error);
           });
@@ -119,6 +123,12 @@ const AISCreen = ({ navigation }) => {
       .catch((error) => {
         console.error(error);
       });
+    } catch (error) {
+      setPrompt(null)
+      setMessage(null)
+      console.log("Error:",error)
+    }
+    
   };
 
   const cancelRecording = async () => {
@@ -143,6 +153,7 @@ const AISCreen = ({ navigation }) => {
               })),
               user.uid
             );
+            setPrompt(null)
             setMessage(null);
             navigation.goBack("");
           } else {
@@ -154,6 +165,7 @@ const AISCreen = ({ navigation }) => {
                     category_id: categoryId,
                   }))
                 );
+                setPrompt(null)
                 setMessage(null);
                 navigation.goBack("");
               };
@@ -162,12 +174,14 @@ const AISCreen = ({ navigation }) => {
           }
         } else if (res.name === "category") {
           await createCategoriesAI({ categories: res.data, userId: user.uid });
+          setPrompt(null)
           setMessage(null);
           navigation.goBack("");
         }
       })
       .catch((error) => {
         console.warn(error);
+        setPrompt(null)
         setMessage(null);
       });
   };
@@ -205,6 +219,7 @@ const AISCreen = ({ navigation }) => {
           width: "fit-content",
         }}
       >
+        {promptMsg && <Text style={{}}>{promptMsg}</Text>}
         {message && (
           <>
             <ActivityIndicator size={"small"} />
