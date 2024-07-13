@@ -1,13 +1,14 @@
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import { Drawer, Text, Button, List, useTheme } from "react-native-paper";
+import { Drawer, Text, Button, List, useTheme, Icon } from "react-native-paper";
 import { Categories } from "../Observables/EnhancedCategories";
 import { useCategoryStore } from "../Stores/categoryStore";
 import { getCategories } from "../DL/firebaseFunctions";
 import { useAuthStore } from "../Stores/authStore";
 import { signOut } from "firebase/auth";
 import { useDatabaseStore } from "../Stores/databaseStore";
+import { aiStore } from "../Stores/aiStore";
 const NavigationDrawer = ({ state, navigation, descriptors }) => {
   const [catAcc, setCatAcc] = useState(true);
 
@@ -17,6 +18,7 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
   const setUser = useAuthStore((state) => state.setUser);
   const user = useAuthStore((state) => state.user);
   const auth = useDatabaseStore((state) => state.auth);
+  const connection = aiStore((state) => state.connection);
 
   const isSelected = (index) => index === state.index;
   const theme = useTheme();
@@ -65,6 +67,17 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
         </List.Accordion>
       </DrawerContentScrollView>
       <View style={{ backgroundColor: theme.colors.background }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingHorizontal: 20,
+          }}
+        >
+          <Text style={{ fontWeight: 600 }}>AI server</Text>
+          <Icon size={20} source={connection ? "link" : "link-off"} color={connection ? "lightgreen" : theme.colors.error} />
+        </View>
         <Button
           mode="text"
           onPress={() => {

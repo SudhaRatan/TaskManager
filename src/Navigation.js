@@ -13,6 +13,10 @@ import TaskDetailsHeader from "./Components/TaskDetailsHeader";
 import DrawerHeader from "./Components/DrawerHeader";
 import { useAuthStore } from "./Stores/authStore";
 import AISCreen from "./Screens/AISCreen";
+import { aiStore } from "./Stores/aiStore";
+import { useEffect } from "react";
+import { io } from "socket.io-client";
+import { env } from "./utils/config";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -20,6 +24,32 @@ const Drawer = createDrawerNavigator();
 export default function Navigation() {
   const theme = useTheme();
   const user = useAuthStore((state) => state.user);
+  const setConnection = aiStore((state) => state.setConnection);
+
+  const socket = io(env.API, {
+    autoConnect: false,
+  });
+
+  useEffect(() => {
+
+    if(user){
+      socket.connect()
+    }
+
+    socket.on("connect", function () {
+      console.log("Connected to server");
+      setConnection(true);
+    });
+
+    socket.on("disconnect", function () {
+      console.log("Disconnected to server");
+      setConnection(null);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [user]);
 
   return (
     <Stack.Navigator
@@ -57,10 +87,14 @@ export default function Navigation() {
             name="subtask"
             component={SubTaskScreen}
           />
-          <Stack.Screen options={(props) => ({
-            presentation: "transparentModal",
-            headerShown:false
-          })} component={AISCreen} name="AI" />
+          <Stack.Screen
+            options={(props) => ({
+              presentation: "transparentModal",
+              headerShown: false,
+            })}
+            component={AISCreen}
+            name="AI"
+          />
         </>
       )}
     </Stack.Navigator>
