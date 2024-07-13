@@ -36,7 +36,6 @@ const CategoryScreen = ({ navigation }) => {
     DeleteRef.current.setParams(task);
   };
 
-
   const CategoryDeleteDialog = () => {
     setCategoryMenu(false);
     DeleteCategoryRef.current.showDialog();
@@ -74,7 +73,20 @@ const CategoryScreen = ({ navigation }) => {
           navigation={navigation}
         />
       </View>
-      <FAB icon="plus" style={styles.fab} onLongPress={() => navigation.navigate("AI")} variant="tertiary" size="medium" onPress={showDialog} />
+      <View style={styles.fab}>
+        <FAB
+          icon="brain"
+          onPress={() => navigation.navigate("AI")}
+          variant="tertiary"
+          size="small"
+        />
+        <FAB
+          icon="plus"
+          variant="tertiary"
+          size="medium"
+          onPress={showDialog}
+        />
+      </View>
       <AddTask user={user} hideDialog={hideDialog} visible={visible} />
       <ConfirmDialog
         ref={DeleteRef}
@@ -122,6 +134,8 @@ const style = (props) =>
       margin: 16,
       right: 0,
       bottom: 0,
+      alignItems:"center",
+      gap:20
     },
   });
 

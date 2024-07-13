@@ -144,7 +144,7 @@ const AISCreen = ({ navigation }) => {
       .then(async (data) => {
         setMessage("Translating to tasks");
         const res = data.data;
-        if (res.name === "task" && res.type === "single") {
+        if (res.name === "task") {
           if (category) {
             await createTasksAI(
               res.data.map((i) => ({
@@ -219,7 +219,7 @@ const AISCreen = ({ navigation }) => {
           width: "fit-content",
         }}
       >
-        {promptMsg && <Text style={{}}>{promptMsg}</Text>}
+        {promptMsg && <Text>{promptMsg}</Text>}
         {message && (
           <>
             <ActivityIndicator size={"small"} />

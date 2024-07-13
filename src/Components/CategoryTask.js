@@ -8,7 +8,7 @@ import {
   Menu,
   TextInput,
 } from "react-native-paper";
-import { Platform, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import { checkTask, upadateTasktitle } from "../DL/firebaseFunctions";
 
 const CategoryTask = ({ task, del, categoryId, navigation }) => {
@@ -39,7 +39,7 @@ const CategoryTask = ({ task, del, categoryId, navigation }) => {
     >
       <TouchableRipple
         onPress={() => {
-          checkTask({ task });
+          if (!canEdit) navigation.navigate("subtask", { taskId: task.id });
         }}
         onLongPress={() => {
           setMenuvisible(true);
@@ -54,11 +54,18 @@ const CategoryTask = ({ task, del, categoryId, navigation }) => {
             }
           }}
         >
-          <Icon
-            size={20}
-            source={task.isChecked ? "check-circle" : "radiobox-blank"}
-            color={theme.colors.primary}
-          />
+          <TouchableOpacity
+          style={{padding:5, borderRadius:"100%"}}
+            onPress={() => {
+              checkTask({ task });
+            }}
+          >
+            <Icon
+              size={20}
+              source={task.isChecked ? "check-circle" : "radiobox-blank"}
+              color={theme.colors.primary}
+            />
+          </TouchableOpacity>
           {canEdit ? (
             <View
               style={{
@@ -110,7 +117,9 @@ const CategoryTask = ({ task, del, categoryId, navigation }) => {
                 style.text,
                 {
                   textDecorationLine: task.isChecked ? "line-through" : "none",
-                  color: task.isChecked ? theme.colors.onSurfaceDisabled : theme.colors.primary,
+                  color: task.isChecked
+                    ? theme.colors.onSurfaceDisabled
+                    : theme.colors.primary,
                 },
               ]}
               numberOfLines={1}
@@ -138,7 +147,7 @@ const CategoryTask = ({ task, del, categoryId, navigation }) => {
               title="Delete"
             />
           </Menu>
-          {!canEdit && (
+          {/* {!canEdit && (
             <TouchableRipple
               style={{ padding: 0 }}
               onPress={() =>
@@ -147,7 +156,7 @@ const CategoryTask = ({ task, del, categoryId, navigation }) => {
             >
               <Icon size={24} source="chevron-right" />
             </TouchableRipple>
-          )}
+          )} */}
         </View>
       </TouchableRipple>
     </Surface>

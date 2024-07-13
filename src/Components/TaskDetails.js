@@ -35,7 +35,7 @@ const TaskDetails = ({ task, subTasks }) => {
   const [taskDesc, setDesc] = useState(task.description);
   const [descIcon, setDescIcon] = useState("");
   const [reminder, setReminder] = useState(false);
-  
+
   const prevDateTime = task?.reminder?.toDate();
 
   const [date, setDate] = useState(undefined);
@@ -47,7 +47,7 @@ const TaskDetails = ({ task, subTasks }) => {
   const taskDescription = task.description;
 
   const UpdateDescription = async () => {
-    setDesc(taskDesc.trim())
+    setDesc(taskDesc.trim());
     updateTaskdescription({
       selectedTaskId: task.id,
       taskDescription: taskDesc.trim(),
@@ -61,7 +61,10 @@ const TaskDetails = ({ task, subTasks }) => {
   const addSubTask = () => {
     Keyboard.dismiss();
     if (subTaskTitle !== "" && subTaskTitle.trim() !== "") {
-      createSubTask({ subtaskTitle: subTaskTitle.trim(), selectedTaskId: task.id });
+      createSubTask({
+        subtaskTitle: subTaskTitle.trim(),
+        selectedTaskId: task.id,
+      });
       setTitle("");
     }
   };
@@ -103,7 +106,11 @@ const TaskDetails = ({ task, subTasks }) => {
   // for saving description using debouncing
   useEffect(() => {
     var unsub;
-    if (taskDesc !== "" && taskDesc !== taskDescription && taskDesc.trim() !== "") {
+    if (
+      taskDesc !== "" &&
+      taskDesc !== taskDescription &&
+      taskDesc.trim() !== ""
+    ) {
       setDescIcon("content-save");
       unsub = setTimeout(async () => {
         await UpdateDescription();
@@ -122,14 +129,22 @@ const TaskDetails = ({ task, subTasks }) => {
     <View
       style={{ width: useBreakPoint("100%", "75%", "50%"), flex: 1, gap: 10 }}
     >
-      <List.Accordion title={task.title} titleStyle={style.text} titleNumberOfLines={100}>
+      <List.Accordion
+        title={task.title}
+        titleStyle={style.text}
+        titleNumberOfLines={100}
+      >
         <TextInput
           label="Description"
           multiline
           value={taskDesc}
           onChangeText={setDesc}
           right={<TextInput.Icon icon={descIcon} />}
-          style={{ backgroundColor: theme.colors.secondaryContainer, marginVertical:10 }}
+          style={{
+            backgroundColor: theme.colors.secondaryContainer,
+            marginVertical: 10,
+            height:Platform.OS === "web" && 100
+          }}
         />
       </List.Accordion>
       <View
@@ -149,14 +164,21 @@ const TaskDetails = ({ task, subTasks }) => {
           style={{ flex: 1 }}
         >
           {reminderDateTime
-            ? `On ${new Date(
-                reminderDateTime
-              ).toLocaleDateString()} at ${new Date(reminderDateTime)
-                .toLocaleTimeString()
-                .split(" ")[0]
-                .slice(0, 5)} ${
+            ? `On ${new Date(reminderDateTime).toLocaleDateString()} at ${
+                new Date(reminderDateTime)
+                  .toLocaleTimeString()
+                  .split(" ")[0]
+                  .split(":")[0]
+              }:${
+                new Date(reminderDateTime)
+                  .toLocaleTimeString()
+                  .split(" ")[0]
+                  .split(":")[1]
+              }  ${
                 Platform.OS === "web"
-                  ? new Date(reminderDateTime)
+                  ? new Date(reminderDateTime).toLocaleTimeString().split(" ")
+                      .length > 1 &&
+                    new Date(reminderDateTime)
                       .toLocaleTimeString()
                       .split(" ")[1]
                   : ""
