@@ -55,7 +55,7 @@ const CategoryTask = ({ task, del, categoryId, navigation }) => {
           }}
         >
           <TouchableOpacity
-          style={{padding:5, borderRadius:"100%"}}
+            style={{ padding: 5 }}
             onPress={() => {
               checkTask({ task });
             }}

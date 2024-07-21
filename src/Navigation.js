@@ -17,6 +17,7 @@ import { aiStore } from "./Stores/aiStore";
 import { useEffect } from "react";
 import { io } from "socket.io-client";
 import { env } from "./utils/config";
+import Routines from "./Screens/Routines";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -124,6 +125,7 @@ function MainDrawer() {
         })}
         component={CategoryScreen}
       />
+      <Drawer.Screen name="Routines" component={Routines} />
     </Drawer.Navigator>
   );
 }

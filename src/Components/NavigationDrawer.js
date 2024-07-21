@@ -39,7 +39,7 @@ const NavigationDrawer = ({ state, navigation, descriptors }) => {
           Task Manager
         </Text>
         {state.routes.map((item, index) => {
-          if (index === 0)
+          if (item.name !== "Category")
             return (
               <Drawer.Item
                 key={item.key}
