@@ -143,7 +143,7 @@ const TaskDetails = ({ task, subTasks }) => {
           style={{
             backgroundColor: theme.colors.secondaryContainer,
             marginVertical: 10,
-            height:Platform.OS === "web" && 100
+            height: Platform.OS === "web" && 100,
           }}
         />
       </List.Accordion>
@@ -177,10 +177,11 @@ const TaskDetails = ({ task, subTasks }) => {
               }  ${
                 Platform.OS === "web"
                   ? new Date(reminderDateTime).toLocaleTimeString().split(" ")
-                      .length > 1 &&
-                    new Date(reminderDateTime)
-                      .toLocaleTimeString()
-                      .split(" ")[1]
+                      .length > 1
+                    ? new Date(reminderDateTime)
+                        .toLocaleTimeString()
+                        .split(" ")[1]
+                    : ""
                   : ""
               }`
             : "Reminder ?"}
