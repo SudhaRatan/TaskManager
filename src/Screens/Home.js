@@ -92,6 +92,7 @@ const Home = ({ navigation }) => {
             contentContainerStyle={{
               paddingHorizontal: useBreakPoint(15, 25, 40),
               gap: 5,
+              minHeight: 100
             }}
           >
             {todayTasks ? todayTasks.length > 0 ? todayTasks.map((task) => {
@@ -115,6 +116,7 @@ const Home = ({ navigation }) => {
             contentContainerStyle={{
               paddingHorizontal: useBreakPoint(15, 25, 40),
               gap: 5,
+              minHeight: 100
             }}
           >
             {recentTasks ? recentTasks.length > 0 ? recentTasks.map((task) => {
@@ -231,7 +233,7 @@ const Home = ({ navigation }) => {
           visible
           onStateChange={onStateChange}
           variant="tertiary"
-          onPress={() => {}}
+          onPress={() => { }}
           onLongPress={() => navigation.navigate("AI")}
           actions={[
             {

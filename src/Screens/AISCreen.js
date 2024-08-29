@@ -6,7 +6,7 @@ import {
   Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
+import { Button, useTheme, Text, ActivityIndicator, Divider, TextInput } from "react-native-paper";
 import { Audio } from "expo-av";
 import axios from "axios";
 import { useNavigationState } from "@react-navigation/native";
@@ -21,7 +21,8 @@ const AISCreen = ({ navigation }) => {
   const [message, setMessage] = useState(null);
   const [promptMsg, setPrompt] = useState(null)
   const [permissionResponse, requestPermission] = Audio.usePermissions();
-  const { height } = Dimensions.get("screen");
+  const { height } = Dimensions.get("window");
+
 
   const [sound, setSound] = useState();
   const [uri, setUri] = useState(null);
@@ -91,44 +92,44 @@ const AISCreen = ({ navigation }) => {
     console.log("Stopping recording..");
     try {
       await recording.stopAndUnloadAsync();
-    await Audio.setAudioModeAsync({
-      allowsRecordingIOS: false,
-    });
-    const uri = recording.getURI();
-    setUri(uri);
-    console.log("Recording stopped and stored at", uri);
-    setRecording(null);
-    const response = await fetch(uri);
-    const data = await response.blob();
-
-    blobToBase64(data)
-      .then((base64Data) => {
-        setMessage("Transcribing");
-        axios
-          .post(`${env.API}/transcribe`, {
-            audio: base64Data,
-            platform: Platform.OS,
-          })
-          .then((data) => {
-            console.log(data.data);
-            setPrompt(data.data)
-            sendPrompt(data.data);
-          })
-          .catch((error) => {
-            setPrompt(null)
-            setMessage(null);
-            // console.error(error);
-          });
-      })
-      .catch((error) => {
-        console.error(error);
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
       });
+      const uri = recording.getURI();
+      setUri(uri);
+      console.log("Recording stopped and stored at", uri);
+      setRecording(null);
+      const response = await fetch(uri);
+      const data = await response.blob();
+
+      blobToBase64(data)
+        .then((base64Data) => {
+          setMessage("Transcribing");
+          axios
+            .post(`${env.API}/transcribe`, {
+              audio: base64Data,
+              platform: Platform.OS,
+            })
+            .then((data) => {
+              console.log(data.data);
+              setPrompt(data.data)
+              sendPrompt(data.data);
+            })
+            .catch((error) => {
+              setPrompt(null)
+              setMessage(null);
+              // console.error(error);
+            });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     } catch (error) {
       setPrompt(null)
       setMessage(null)
-      console.log("Error:",error)
+      console.log("Error:", error)
     }
-    
+
   };
 
   const cancelRecording = async () => {
@@ -187,11 +188,11 @@ const AISCreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    startRecording();
+    // startRecording();
   }, [permissionResponse]);
 
   return (
-    <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
+    <View style={{ justifyContent: "flex-end", alignItems: "center", position:"relative", height: height }}>
       <TouchableOpacity
         activeOpacity={1}
         style={{
@@ -212,14 +213,14 @@ const AISCreen = ({ navigation }) => {
           alignItems: "center",
           gap: 30,
           position: "absolute",
-          top: height / 2,
+          bottom: 20,
           left: 0,
           right: 0,
           margin: "auto",
           width: "fit-content",
         }}
       >
-        {promptMsg && <Text>{promptMsg}</Text>}
+        {promptMsg && <Text style={{ overflow: "hidden", }} ellipsizeMode="clip">{promptMsg}</Text>}
         {message && (
           <>
             <ActivityIndicator size={"small"} />
@@ -241,11 +242,13 @@ const AISCreen = ({ navigation }) => {
           </>
         ) : (
           !message && (
-            <Button mode="contained" onPress={startRecording}>
+            <Button mode="contained" icon={"microphone"} onPress={startRecording}>
               Start
             </Button>
           )
         )}
+        <Divider />
+        <TextInput multiline mode="flat" label={"Prompt"} placeholder="Type..." numberOfLines={5} onChangeText={setPrompt} value={promptMsg ?? ""} right={<TextInput.Icon onPress={() => sendPrompt(promptMsg)} icon="send" />} />
         {/* <Button onPress={playSound}>Play sound</Button> */}
       </View>
     </View>
