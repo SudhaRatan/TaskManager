@@ -14,6 +14,7 @@ import { createCategoriesAI, createTasksAI } from "../DL/firebaseFunctions";
 import { useCategoryStore } from "../Stores/categoryStore";
 import { useAuthStore } from "../Stores/authStore";
 import { env } from "../utils/config";
+import { useBreakPoint } from "../utils/breakpoint";
 
 const AISCreen = ({ navigation }) => {
   const theme = useTheme();
@@ -192,7 +193,7 @@ const AISCreen = ({ navigation }) => {
   }, [permissionResponse]);
 
   return (
-    <View style={{ justifyContent: "flex-end", alignItems: "center", position:"relative", height: height }}>
+    <View style={{ justifyContent: "flex-end", alignItems: "center", position: "relative", height: height }}>
       <TouchableOpacity
         activeOpacity={1}
         style={{
@@ -217,7 +218,7 @@ const AISCreen = ({ navigation }) => {
           left: 0,
           right: 0,
           margin: "auto",
-          width: "fit-content",
+          width: useBreakPoint("90%", "60%", "45%"),
         }}
       >
         {promptMsg && <Text style={{ overflow: "hidden", }} ellipsizeMode="clip">{promptMsg}</Text>}
@@ -248,7 +249,16 @@ const AISCreen = ({ navigation }) => {
           )
         )}
         <Divider />
-        <TextInput multiline mode="flat" label={"Prompt"} placeholder="Type..." numberOfLines={5} onChangeText={setPrompt} value={promptMsg ?? ""} right={<TextInput.Icon onPress={() => sendPrompt(promptMsg)} icon="send" />} />
+        <TextInput multiline
+        style={{width: "100%"}}
+          mode="outlined"
+          label={"Prompt"}
+          placeholder="Type..."
+          numberOfLines={5}
+          onChangeText={setPrompt}
+          value={promptMsg ?? ""}
+          right={<TextInput.Icon onPress={() => sendPrompt(promptMsg)} icon="send" />}
+        />
         {/* <Button onPress={playSound}>Play sound</Button> */}
       </View>
     </View>
