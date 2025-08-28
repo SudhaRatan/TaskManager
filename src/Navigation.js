@@ -125,7 +125,7 @@ function MainDrawer() {
         })}
         component={CategoryScreen}
       />
-      <Drawer.Screen name="Routines" component={Routines} />
+      {/* <Drawer.Screen name="Routines" component={Routines} /> */}
     </Drawer.Navigator>
   );
 }
